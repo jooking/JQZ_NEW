@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <link href="../../css/mui.min.css" rel="stylesheet"/>
+    <style>
+    	#title {
+				padding: 20px 15px 10px;
+				color: #fff;
+				font-size: 15px;
+			}
+		.mui-title-custom {color: #fff;}
+		.touxiang {
+	    	text-align: center;
+	    	color: #F3F3F3;
+	    	background-color: #1D2831;
+	    }
+	    img{border-radius:5px;border-top-left-radius:5px;border-top-right-radius:5px;border-bottom-right-radius:5px;border-bottom-left-radius:5px;}
+	    .a-btn{width: 50%;font-size:15px;font-weight:100;line-height:1.42;display:inline-block;padding:6px 12px;cursor:pointer;-webkit-transition:all;transition:all;-webkit-transition-timing-function:linear;transition-timing-function:linear;-webkit-transition-duration:.2s;transition-duration:.2s;text-align:center;vertical-align:top;white-space:nowrap;color:#F7F7F8;background-color:#1D2831;background-clip:padding-box}
+    	.mar-10{margin-bottom: 10px;margin-top: 10px;}
+    	.pad-10{padding-bottom: 10px;padding-top: 10px;}
+    	.width-33{width: 33%;float: left;text-align: center;border-bottom: 10px #efeff4 solid;}
+    	.border-left{border-left: 1px solid #666666;}
+    	.align-center{text-align: center;}
+    	.mui-blank-10{width: 100%;height: 10px;background-color: #000000;}
+    	.width-50{width: 48%;float: left;text-align: center;}
+    	.title{margin: 20px 0px 7px 0px;color: #FFFFFF;font-size: 16px;line-height:1.42 ;background-color: #CCCCCC;}
+    </style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav" style="padding-right: 15px;background-color: #1d2831">
+		<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+			<span class="mui-icon mui-icon-left-nav" style="color: #FFFFFF;"></span>
+		</button>
+		<h1 class="mui-title mui-title-custom" >
+			<a href="javascript:;" id="title">牛人详情</a>
+		</h1>
+	</header>
+	<div class="mui-content" style="margin-bottom: 10px;">
+		<div class="touxiang">
+			<div style="padding-top: 10px;" id="pic_url">
+				<img src="../../images/cbd.jpg" width="100px"/> 
+			</div>
+			<h3 id="nick_name" >牛人名字</h3>
+			<h4 id="mood" class="mui-ellipsis-1 " style="margin: 0;">说说</h4>
+			<a href="javascript:;" id="bowen_cnt" class="mui-pull-left a-btn">博文量0</a>
+			<a href="javascript:;" id="guanzhu_cnt" class="mui-pull-right a-btn">关注量0</a>
+		</div>
+	</div>
+	<div class="mui-content">
+		<div class="width-33">
+			<span class="mui-icon mui-icon-home" style="color: red;"></span><br />
+			<span class="mui-tab-label" id="allInCome">+00.00%</span><br />
+			<span class="mui-tab-label">总收益率</span><br />
+		</div>
+		<div class="width-33 border-left">
+			<span class="mui-icon mui-icon-home" style="color: red;"></span><br />
+			<span class="mui-tab-label" id="rank">第0名</span><br />
+			<span class="mui-tab-label">排名</span><br />
+		</div>
+		<div class="width-33 border-left">
+			<span class="mui-icon mui-icon-home" style="color: red;"></span><br />
+			<span class="mui-tab-label" id="winRate">+00.00%</span><br />
+			<span class="mui-tab-label">胜率</span><br />
+		</div>
+	</div>
+	<div class="mui-content align-center">
+		<img src="../../images/bg_me.png" width="95%" id="winUrl"/>
+	</div>
+	<div class="mui-content">
+		<div class="width-50">
+			<span class="mui-tab-label" id="allMoney">总资产&nbsp;&nbsp;0元</span><br />
+			<span class="mui-tab-label" id="gupiaoMoney">股票市值0元</span><br />
+			<span class="mui-tab-label" id="useMoney">可用资金0元</span><br />
+		</div>
+		<div class="width-50">
+			<span class="mui-tab-label" id="weekRate">周均收益率0%</span><br />
+			<span class="mui-tab-label" id="cangwei">仓&nbsp;&nbsp;&nbsp;&nbsp;位0%</span><br />
+			<span class="mui-tab-label" id="startDate">初次交易2016-01-01</span><br />
+		</div>
+	</div>
+	<div class="mui-content">
+		<div class="title">&nbsp;&nbsp; 当前持仓</div>
+		<div style="margin-left:10px ;">
+			<h3 id="buyGu">无(000000)</h3>
+			<h4 id="buyPrice">买入价格:0元</h4>
+			<p id="buyTime">买入时间:2016-01-01 00:00:00</p>
+		</div>
+	</div>
+	<script src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/md5.js" ></script>
+	<script type="text/javascript" charset="UTF-8">
+    	var network = true;
+      	mui.init();
+      	var currentNiuid;
+//    	mui.previewImage();
+      	//添加newId自定义事件监听
+		window.addEventListener('initFn',function(event){
+		  //获得事件参数
+		  var id = event.detail.id;
+		  currentNiuid = id;
+		  //清空旧数据
+		  clearDetail();
+		  //根据id向服务器请求博文详情
+		  loadNiuInfo(id);
+		});
+		function clearDetail(){
+				document.getElementById("pic_url").innerHTML = "<img src='../../images/cbd.jpg' width='100px'/>";
+				document.getElementById("title").innerHTML = "牛人详情";
+				document.getElementById("nick_name").innerHTML = "牛人名字";
+				document.getElementById("mood").innerHTML = "说说";
+				document.getElementById("bowen_cnt").innerHTML = "博文量0";
+				document.getElementById("guanzhu_cnt").innerHTML = "关注量0";
+				document.getElementById("allInCome").innerHTML = "+00.00%";
+				document.getElementById("rank").innerHTML = "第0名";
+				document.getElementById("winRate").innerHTML = "+00.00%";
+				document.getElementById("allMoney").innerHTML = "总资产&nbsp;&nbsp;0元";
+				document.getElementById("gupiaoMoney").innerHTML = "股票市值0元";
+				document.getElementById("useMoney").innerHTML = "可用资金0元";
+				document.getElementById("weekRate").innerHTML = "周均收益率0%";
+				document.getElementById("cangwei").innerHTML = "仓&nbsp;&nbsp;&nbsp;&nbsp;位0%";
+				document.getElementById("startDate").innerHTML = "初次交易2016-01-01";
+				document.getElementById("buyGu").innerHTML = "无(000000)";
+				document.getElementById("buyPrice").innerHTML = "买入价格:0元";
+				document.getElementById("buyTime").innerHTML = "买入时间:2016-01-01 00:00:00";
+		}
+		function loadNiuInfo(id){
+			if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+				network = false;
+			}
+			if(network){
+				var url = getServerHost()+"/niu/getNiuInfoByUid.do";
+				var timeStamp = getTimeStamp();
+				var msgSignature = getMsgSignature(timeStamp);
+				var token = getToken();
+				var data = {
+					timestamp: timeStamp,
+					clientType: "app",
+					msg_signature: msgSignature,
+					token:token,
+					nid:id 
+				};
+				mui.getJSON(url, data, showDetail);
+			}else{
+				mui.toast("当前网络不给力，请稍后再试" );
+			}
+		}
+		var showDetail = function(response){
+			if(response.errcode == 100200){
+				var obj = response.data.obj;
+				document.getElementById("pic_url").innerHTML = '<img src="'+getImageHost()+obj.pic_url+'" width="100px"/> ';
+				document.getElementById("title").innerHTML = obj.nick_name;
+				document.getElementById("nick_name").innerHTML = obj.nick_name;
+				document.getElementById("mood").innerHTML = obj.mood;
+				document.getElementById("bowen_cnt").innerHTML = "博文量"+obj.bowen_cnt;
+				document.getElementById("guanzhu_cnt").innerHTML = "关注量"+obj.guanzhu_cnt;
+				document.getElementById("allInCome").innerHTML = obj.allInCome+"+00.00%";
+				document.getElementById("rank").innerHTML = "第"+obj.rank+"名";
+				document.getElementById("winRate").innerHTML = obj.winRate;
+				document.getElementById("allMoney").innerHTML = "总资产&nbsp;&nbsp;"+obj.allMoney+"元";
+				document.getElementById("gupiaoMoney").innerHTML = "股票市值"+obj.gupiaoMoney+"元";
+				document.getElementById("useMoney").innerHTML = "可用资金"+obj.useMoney+"元";
+				document.getElementById("weekRate").innerHTML = "周均收益率"+obj.weekRate+"%";
+				document.getElementById("cangwei").innerHTML = "仓&nbsp;&nbsp;&nbsp;&nbsp;位"+obj.cangwei+"%";
+				document.getElementById("startDate").innerHTML = "初次交易"+obj.startDate;
+				document.getElementById("buyGu").innerHTML = obj.buyGu;
+				document.getElementById("buyPrice").innerHTML = "买入价格:"+obj.buyPrice+"元";
+				document.getElementById("buyTime").innerHTML = "买入时间:"+obj.buyTime;
+			}else if(response.errcode == 100402){
+				mui.toast("bowen-view关键字不足!");
+			}else if(response.errcode == 100404){
+				mui.toast("牛人资料没找到!");
+			}else{
+				mui.toast("bowen-view:未知");
+			}
+		}
+	</script>
+</body>
+</html>

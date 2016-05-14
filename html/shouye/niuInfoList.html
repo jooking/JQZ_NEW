@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>牛人信息</title>
+    <link href="../../css/mui.min.css" rel="stylesheet"/>
+    <link href="../../css/app.css" rel="stylesheet"/>
+    <style>
+    	.li-bot{border-bottom: solid 8px #666666;}
+		.mar-10{margin-top: 10px;margin-bottom: 10px;}
+		.no-border{border: hidden;}
+    </style>
+</head>
+<body>
+<div class="mui-content">
+	<div class="mui-scroll" id="niuScroll">
+		<div class="mui-loading">
+			<div class="mui-spinner">
+			</div>
+		</div>
+	</div>
+</div>
+<script src="../../js/mui.min.js"></script>
+<script src="../../js/md5.js"></script>
+<script>
+mui.init({
+	swipeBack: false
+});
+var network = true;
+var ws = null;
+var niuInfoDetail = null;
+function plusReady(){
+	ws=plus.webview.currentWebview();
+	niuInfoDetail=mui.preload({"id": 'niuInfoDetail',"url": 'niuInfoDetail.html'});
+}
+if (mui.os.plus) {
+	mui.plusReady(function() {
+		loadNiu();
+		plusReady();
+	});
+} else {
+	mui.ready(function() {
+		plusReady();
+	});
+}
+function loadNiu(){
+	if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+		network = false;
+	}
+	if(network){
+		var url = getServerHost()+"/niu/getTop10Niu.do";
+		var timeStamp = getTimeStamp();
+		var msgSignature = getMsgSignature(timeStamp);
+		var data = {
+			timestamp: timeStamp,
+			clientType: "app",
+			msg_signature: msgSignature
+		};
+		mui.getJSON(url, data, successNiuInfo);
+	}else{
+		mui.toast("niubi-view当前网络不给力，请稍后再试");
+	}
+}
+var successNiuInfo = function(response) {
+	var imgHost = getImageHost();
+	var items = response.data.list;
+	var str = '<ul class="mui-table-view">';
+	mui.each(items,function(index,item){
+		str += '<li class="mui-table-view-cell mui-media li-bot">';
+		str += '<a href="javascript:;" class="niuInfo'+item.guCode+'">';
+		str += '<img class="mui-media-object mui-pull-left" src="'+imgHost+item.pic_url+'" id="niuUser'+item.niu_id+'" />';
+		str += '<button type="button" class="mui-pull-right no-border niuInfo'+item.guCode+'" ><span class="niuInfo'+item.guCode+'">总收益率 <font style="color:red;">'+item.allInCome+'%</font></br>第'+item.rank+'名</span></button>';
+		str += '<div class="mui-media-body-mine niuInfo'+item.guCode+'" >'+item.nick_name;
+		str += '<h6>买入时间'+item.buyTime+'</h6>';
+		str += '<h4 class="mui-ellipsis-1 mar-10 niuInfo'+item.guCode+'">买入 '+item.buyGu+'</h4>';
+		str += '<h5 class="mui-ellipsis-1 niuInfo'+item.guCode+'">买入价格  '+item.buyPrice+' 元</h5>';
+		str += '</div></a>';
+		str += '</li>';
+	});
+	str += '</ul>'
+	var niuDiv = document.getElementById("niuScroll");
+	if(niuDiv.querySelector(".mui-loading")){
+		niuDiv.innerHTML = str;
+	}
+};
+window.addEventListener('tap', function(event) {
+	var eid = event.target.id;
+	var ecl = event.target.className;
+	if(eid.indexOf('niuUser') > -1){
+		var nid = eid.substr(7);
+		detailPageFn(nid);
+	}else if(ecl.indexOf('niuInfo') > -1){
+		var nid = ecl.substr(ecl.indexOf('niuInfo')+7);
+		mui.toast(nid);
+	}
+});
+function detailPageFn(nid){
+	//获得详情页面
+	if(!niuInfoDetail){niuInfoDetail = plus.webview.getWebviewById('niuInfoDetail');}
+	//触发详情页面的newsId事件
+	mui.fire(niuInfoDetail,'initFn',{id:nid});
+	if(mui.os.ios){
+		niuInfoDetail.show("slide-in-bottom");
+	}else if(mui.os.android){
+		mui.openWindow({
+			id: 'niuInfoDetail',
+			show: {aniShow: 'pop-in'},
+			styles: {popGesture: 'hide'},
+			waiting: {autoShow: false}
+		});
+	}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>博文详细信息</title>
+    <link href="../../css/mui.min.css" rel="stylesheet"/>
+    <link href="../../css/iconfont.css" rel="stylesheet" />
+    <style>
+    	body{background-color: #FFFFFF;}
+    	#title {
+				padding: 20px 15px 10px;
+				color: #fff;
+				font-size: 15px;
+			}
+		.mui-title-custom {color: #fff;}
+		.bowen-content{margin-top: 10px;}
+		.bowen-content img{max-width: 100%;height: auto;}
+		.mui-blank-10{width: 100%;height: 10px;background-color: #FFFFFF;}
+		.mui-blank-20{width: 100%;height: 20px;background-color: #FFFFFF;}
+		.bowen-images ul{background-color: #FFFFFF;}
+		.a-btn{width: 50%;font-size:12px;font-weight:200;line-height:1.42;display:inline-block;margin-bottom:10px;padding:6px 12px;cursor:pointer;-webkit-transition:all;transition:all;-webkit-transition-timing-function:linear;transition-timing-function:linear;-webkit-transition-duration:.2s;transition-duration:.2s;text-align:center;vertical-align:top;white-space:nowrap;color:#999999;border:1px solid #ccc;border-left: hidden;border-right:hidden;border-radius:3px;border-top-left-radius:3px;border-top-right-radius:3px;border-bottom-right-radius:3px;border-bottom-left-radius:3px;background-color:#FFFFFF;background-clip:padding-box}
+		.mui-margin-bottom-20{background-color: #FFFFFF;}
+		.mui-ellipsis-4{display:-webkit-box;overflow:hidden;white-space:normal!important;text-overflow:ellipsis;word-wrap:break-word;-webkit-line-clamp:4;-webkit-box-orient:vertical}
+		.mui-margin-left-right-10{padding: 0 10px 0 10px;}
+		.mui-margin-top-10{margin-top: 5px;}
+		.mui-icon-little{font-size:18px;font-style:normal;}
+		
+		.mui-preview-image.mui-fullscreen {
+				position: fixed;
+				z-index: 20;
+				background-color: #000;
+			}
+			.mui-preview-header,
+			.mui-preview-footer {
+				position: absolute;
+				width: 100%;
+				left: 0;
+				z-index: 10;
+			}
+			.mui-preview-header {
+				height: 44px;
+				top: 0;
+			}
+			.mui-preview-footer {
+				height: 50px;
+				bottom: 0px;
+			}
+			.mui-preview-header .mui-preview-indicator {
+				display: block;
+				line-height: 25px;
+				color: #fff;
+				text-align: center;
+				margin: 15px auto 4;
+				width: 70px;
+				background-color: rgba(0, 0, 0, 0.4);
+				border-radius: 12px;
+				font-size: 16px;
+			}
+			.mui-preview-image {
+				display: none;
+				-webkit-animation-duration: 0.5s;
+				animation-duration: 0.5s;
+				-webkit-animation-fill-mode: both;
+				animation-fill-mode: both;
+			}
+			.mui-preview-image.mui-preview-in {
+				-webkit-animation-name: fadeIn;
+				animation-name: fadeIn;
+			}
+			.mui-preview-image.mui-preview-out {
+				background: none;
+				-webkit-animation-name: fadeOut;
+				animation-name: fadeOut;
+			}
+			.mui-preview-image.mui-preview-out .mui-preview-header,
+			.mui-preview-image.mui-preview-out .mui-preview-footer {
+				display: none;
+			}
+			.mui-zoom-scroller {
+				position: absolute;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+				-webkit-box-pack: center;
+				-webkit-justify-content: center;
+				justify-content: center;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				-webkit-backface-visibility: hidden;
+			}
+			.mui-zoom {
+				-webkit-transform-style: preserve-3d;
+				transform-style: preserve-3d;
+			}
+			.mui-slider .mui-slider-group .mui-slider-item img {
+				width: auto;
+				height: auto;
+				max-width: 100%;
+				max-height: 100%;
+				object-fit: cover;
+			}
+			.mui-android-4-1 .mui-slider .mui-slider-group .mui-slider-item img {
+				width: 100%;
+			}
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-slider-group .mui-slider-item {
+				display: inline-table;
+			}
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-zoom-scroller img {
+				display: table-cell;
+				vertical-align: middle;
+			}
+			.mui-preview-loading {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				display: none;
+			}
+			.mui-preview-loading.mui-active {
+				display: block;
+			}
+			.mui-preview-loading .mui-spinner-white {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				margin-left: -25px;
+				margin-top: -25px;
+				height: 50px;
+				width: 50px;
+			}
+			.mui-preview-image img.mui-transitioning {
+				-webkit-transition: -webkit-transform 0.5s ease, opacity 0.5s ease;
+				transition: transform 0.5s ease, opacity 0.5s ease;
+			}
+			@-webkit-keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}
+			@keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}
+			@-webkit-keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			}
+			@keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			}
+			p img {
+				max-width: 100%;
+				height: auto;
+			}
+			.mui-slider-img-content {
+				position: absolute;
+				bottom: 10px;
+				left: 10px;
+				right: 10px;
+				color: white;
+				text-align: center;
+				line-height: 21px
+			}
+			
+    </style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav" style="padding-right: 15px;background-color: #1d2831">
+		<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+			<span class="mui-icon mui-icon-left-nav" style="color: #FFFFFF;"></span>
+		</button>
+		<h1 class="mui-title mui-title-custom" >
+			<a href="javascript:;" id="title">博文详情</a>
+		</h1>
+	</header>
+	<div class="mui-content" style="background-color: #FFFFFF;">
+		<div class="mui-blank-10"></div>
+		<div class="mui-table-view mui-margin-left-right-10" style="margin-top: 0;border: hidden;">
+			<img class="mui-media-object mui-pull-left" id="imgid" src="" />
+			<div class="mui-media-body" style="border: hidden;">
+				<span id="createrName"></span>
+				<h6 id="create_time"></h6>
+			</div>
+			<div class="bowen-content" id="contentid">
+			</div>
+			<div class="mui-content-padded">
+				
+			</div>
+			<div class="mui-margin-bottom-20">
+				<a href="javascript:;" id="pinglun" class="mui-pull-left a-btn" style="color: #999999;" ><span class="mui-icon mui-icon-little mui-icon-chat">评论</span></a>
+				<a href="javascript:;" id="zan" class="mui-pull-right a-btn" style="color: #999999;"><span class="mui-icon iconfont icon-appreciate" id="dianzan">点赞(0)</span></a>
+			</div>
+		</div>
+		<div class="title">
+			全部评论
+		</div>
+		<div class="mui-scroll">
+				<!--数据列表-->
+				<ul class="mui-table-view" id="pinglunUl">
+				</ul>
+			</div>
+	</div>
+</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="..//..js/mui.zoom.js"></script>
+	<script src="../../js/mui.previewimage.js"></script>
+	<script type="text/javascript" src="../../js/md5.js" ></script>
+	<script type="text/javascript" charset="UTF-8">
+    	var network = true;
+      	mui.init();
+      	var currentBWid;
+//    	mui.previewImage();
+      	//添加newId自定义事件监听
+		window.addEventListener('initDetailPage',function(event){
+		  //获得事件参数
+		  var id = event.detail.id;
+		  currentBWid = id;
+		  //清空旧数据
+		  var table1 = document.body.querySelector('.mui-content-padded');
+		  var table2 = document.getElementById("pinglunUl");
+		  table1.innerHTML = "";
+		  table2.innerHTML = "";
+		  
+		  //根据id向服务器请求博文详情
+		  loadBWDetail(id);
+		  loadPingluns(id);
+		});
+		window.addEventListener('overPinglun',function(event){
+			if(event.detail.resultStatus == "success"){
+				loadPingluns(currentBWid);
+			}
+		});
+		function loadBWDetail(bwid){
+			if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+				network = false;
+			}
+			if(network){
+				var url = getServerHost()+"/niu/getBowenInfo.do";
+				var timeStamp = getTimeStamp();
+				var msgSignature = getMsgSignature(timeStamp);
+				var token = getToken();
+				var data = {
+					timestamp: timeStamp,
+					clientType: "app",
+					msg_signature: msgSignature,
+					token:token,
+					bwid:bwid 
+				};
+				mui.getJSON(url, data, showDetail);
+			}else{
+				mui.toast("当前网络不给力，请稍后再试" );
+			}
+		}
+		var showDetail = function(response) {
+			if(response.errcode == 100200){
+				var obj = response.data.obj;
+				document.getElementById("imgid").src = getImageHost()+obj.user_pic;
+				document.getElementById("createrName").innerHTML = obj.nick_name;
+				document.getElementById("create_time").innerHTML = obj.create_time;
+				document.getElementById("contentid").innerHTML = obj.content;
+				document.getElementById("dianzan").innerHTML = '点赞('+obj.zan_cnt+')';
+				
+				var pic_urls = obj.pic_urls;
+				var table = document.body.querySelector('.mui-content-padded');
+				if(pic_urls != "null" && pic_urls != "" && pic_urls != undefined){
+					var ul = document.createElement('ul');
+					ul.className = "mui-table-view mui-grid-view mui-grid-9";
+					var liarr = pic_urls.split(";");
+					mui.each(liarr,function(index,item){
+						var li = document.createElement('li');
+						li.className = "mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3";
+						var innerStr = '<p>';
+						innerStr += '<img src="'+getImageHost()+item+'" data-preview-src="" data-preview-group="1" />';
+						innerStr += '</p>';
+						li.innerHTML = innerStr;
+						ul.appendChild(li);
+					});
+					table.appendChild(ul);
+				}
+			}else if(response.errcode == 100402){
+				mui.toast("bowen-view关键字不足!");
+			}else if(response.errcode == 100404){
+				mui.toast("bowen-view没找到!");
+			}else{
+				mui.toast("bowen-view:未知");
+			}
+		};
+		function loadPingluns(bwid){
+			if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+				network = false;
+			}
+			if(network){
+				var url = getServerHost()+"/niu/getPinglunList.do";
+				var timeStamp = getTimeStamp();
+				var msgSignature = getMsgSignature(timeStamp);
+				var token = getToken();
+				var data = {
+					timestamp: timeStamp,
+					clientType: "app",
+					msg_signature: msgSignature,
+					token:token,
+					bid:bwid
+				};
+				mui.getJSON(url, data, showPinglun);
+			}else{
+				mui.toast("当前网络不给力，请稍后再试" );
+			}	
+		}
+		var showPinglun = function(response) {
+			if(response.errcode == 100200){
+				var items = response.data.list;
+				var table = document.getElementById("pinglunUl");
+				table.innerHTML = "";
+				mui.each(items,function(index,item){
+					var table = document.getElementById("pinglunUl");
+					var li = document.createElement('li');
+					li.className = "mui-table-view-cell mui-media li-bot";
+					var innerStr = '';
+					if(item.type=="0"){//pinglun
+						innerStr += '<a href="javascript:;" id="pinglun'+item.id+'">';
+						innerStr += '<img class="mui-media-object mui-pull-left" src="'+getImageHost()+item.user1Pic+'" />';
+						innerStr += '<div class="mui-media-body-mine">'+item.user1name;
+						innerStr += '<h6>'+item.create_time+'</h6>';
+						innerStr += '<p class="mui-ellipsis-4 mui-margin-top-10">'+item.content+'</p>';
+						innerStr += '</div></a>';
+					}else if(item.type=="1"){//reply
+						innerStr += '<a href="javascript:;" id="reply'+item.id+'">';
+						innerStr += '<img class="mui-media-object mui-pull-left" src="'+getImageHost()+item.user1Pic+'" />';
+						innerStr += '<div class="mui-media-body-mine">'+item.user1name;
+						innerStr += '&nbsp;&nbsp;回复&nbsp;&nbsp;'+item.user2name;
+						innerStr += '<h6>'+item.create_time+'</h6>';
+						innerStr += '<p class="mui-ellipsis-4 mui-margin-top-10">'+item.content+'</p>';
+						innerStr += '</div></a>';
+					}
+					li.innerHTML = innerStr;
+					table.appendChild(li);
+				});
+			}else if(response.errcode == 100402){
+				mui.toast("bowen-view关键字不足!");
+			}else if(response.errcode == 100404){
+				mui.toast("bowen-view没找到!");
+			}else{
+				mui.toast("bowen-view:未知");
+			}
+		};
+		window.addEventListener('tap', function(event) {
+			var eid = event.target.id;
+			var ecl = event.target.className;
+			if(ecl.indexOf('mui-icon-chat') > -1){
+				pinglunFn();
+			}else if(eid=='pinglun'){
+				pinglunFn();
+			}else if(ecl.indexOf('icon-appreciate') > -1){
+				zanFn();
+			}else if(eid=='dianzan'){
+				zanFn();
+			}
+		});
+		function pinglunFn(){
+			var pinglunPage = plus.webview.getWebviewById('addPinglun.html');
+			mui.fire(pinglunPage,'addPinglun',{id:currentBWid,from:"detail"});
+				if(mui.os.ios){
+					pinglunPage.show("slide-in-bottom");
+				}else if(mui.os.android){
+					mui.openWindow({
+						id: 'addPinglun.html',
+						show: {aniShow: 'slide-in-bottom'},
+						styles: {popGesture: 'hide'},
+						waiting: {autoShow: false}
+					});
+				}
+		}
+		function zanFn(){
+			if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+					network = false;
+				}
+				if(network){
+					var url = getServerHost()+"/niu/addZanByBowenId.do";
+					var timeStamp = getTimeStamp();
+					var msgSignature = getMsgSignature(timeStamp);
+					var token = getToken();
+					var data = {
+						timestamp: timeStamp,
+						clientType: "app",
+						msg_signature: msgSignature,
+						token:token,
+						bid:currentBWid
+					};
+					mui.getJSON(url, data, addZan);
+				}else{
+					mui.toast("当前网络不给力，请稍后再试" );
+				}	
+		}
+		var addZan = function(response) {
+				if(response.errcode == 100200){
+					var obj = response.data.obj;
+					var objid = obj.id;
+					mui.toast(objid);
+					var trg = document.getElementById("dianzan");
+					trg.innerHTML = "点赞("+obj.zan_cnt+")";
+				}else if(response.errcode == 100402){
+					mui.toast("bowen-view关键字不足!");
+				}else if(response.errcode == 100404){
+					mui.toast("bowen-view没找到!");
+				}else{
+					mui.toast("bowen-view:未知");
+				}
+			}
+    </script>
+</html>

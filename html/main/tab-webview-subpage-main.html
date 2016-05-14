@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>金钱庄</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+			<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+			<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<style>
+			html,body {
+				background-color: #efeff4;
+			}
+			.class-selected{color: #FFFFFF;background-color: #666666;}
+		</style>
+	</head>
+	<body>
+		<div class="mui-content">
+		<div id="slider" class="mui-slider" >
+			<div class="mui-slider-group mui-slider-loop">
+				<!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
+					<div class="mui-slider-item mui-slider-item-duplicate">
+						<a href="#">
+							<img src="" id="shouye_img11">
+							<p class="mui-slider-title" id="img_title11"></p>
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="" id="shouye_img1">
+							<p class="mui-slider-title" id="img_title1"></p>
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="" id="shouye_img2">
+							<p class="mui-slider-title" id="img_title2"></p>
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="" id="shouye_img3">
+							<p class="mui-slider-title" id="img_title3"></p>
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="" id="shouye_img4">
+							<p class="mui-slider-title" id="img_title4"></p>
+						</a>
+					</div>
+					<!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
+					<div class="mui-slider-item mui-slider-item-duplicate">
+						<a href="#">
+							<img src="" id="shouye_img44">
+							<p class="mui-slider-title" id="img_title44"></p>
+						</a>
+					</div>
+			</div>
+			<div class="mui-slider-indicator">
+				<div class="mui-indicator mui-active"></div>
+				<div class="mui-indicator"></div>
+				<div class="mui-indicator"></div>
+				<div class="mui-indicator"></div>
+			</div>
+		</div>
+		<div id="slider2" class="mui-slider" style="border: hidden;">
+			<div class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" >
+				<a class="mui-control-item class-selected" id="tab-niu">
+				牛人动态
+				</a>
+				<a class="mui-control-item" id="tab-news">
+				最新资讯
+				</a>
+			</div>
+		</div>
+	</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/md5.js" ></script>
+	<script>
+		mui.init({
+			swipeBack: false
+		});
+		var network = true;
+		var slider = mui("#slider");
+		slider.slider({interval: 5000});
+		
+		var currentPage = "niu";
+		var niuInfoPage = null;
+		var newsPage = null;
+		var ws = null;
+		var stop = 0;
+		
+		if (mui.os.plus) {
+			mui.plusReady(function() {
+				var ww = screen.width;
+				var cw = document.documentElement.clientWidth;
+				var pw = plus.screen.resolutionWidth;
+				var hh = screen.height;
+				var ch = document.documentElement.clientHeight;
+				var ph = plus.screen.resolutionHeight;
+				//规定上传的图片比例为500：333
+				var t = 333*ww/500 + 40;
+				var ct = 333*cw/500 + 40;
+				
+				if(ct == 0){
+					ct = 333*pw/500 + 40;
+				}
+				if(mui.os.android){
+					stop = ct;
+				}else{
+					stop = t;
+				}
+				loadSliderImg();
+			});
+		} else {
+			mui.ready(function() {
+			});
+		}
+		function loadSliderImg(){
+			if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+				network = false;
+			}
+			if(network){
+				var url = getServerHost()+"/niu/getNiuSlideImg.do";
+				var timeStamp = getTimeStamp();
+				var msgSignature = getMsgSignature(timeStamp);
+				var data = {
+					timestamp: timeStamp,
+					clientType: "app",
+					msg_signature: msgSignature,
+					type:"shouye"
+				};
+				mui.getJSON(url, data, successImg);
+				ws=plus.webview.currentWebview();
+				niuInfoPage = plus.webview.create("../shouye/niuInfoList.html",
+										"niuInfoList",{top: stop+'px',bottom: '0px'});
+				newsPage = plus.webview.create("../shouye/newsList.html",
+										"news",{top: stop+'px',bottom: '0px'});
+				ws.append(niuInfoPage);
+				currentPage = "niu";
+			}else{
+				mui.toast("niubi-view当前网络不给力，请稍后再试");
+			}
+		}
+		var successImg = function(response) {
+			var imgHost = getImageHost();
+			var items = response.data.list;
+			mui.each(items,function(index,item){
+				var i = index+1;
+				var iurl = imgHost+item.dir+item.img_name;
+				var itit = item.title;
+				document.getElementById("shouye_img"+i).src = iurl;
+				document.getElementById("img_title"+i).innerHTML = itit;
+				if(index==1){
+					document.getElementById("shouye_img44").src = iurl;
+					document.getElementById("img_title44").innerHTML = itit;
+				}
+				if(index==4){
+					document.getElementById("shouye_img11").src = iurl;
+					document.getElementById("img_title11").innerHTML = itit;
+				}
+			});
+		};
+		
+		window.addEventListener('tap', function(event) {
+			var eid = event.target.id;
+			var ecl = event.target.className;
+			if(eid.indexOf('tab-niu') > -1){
+				var thisItem = document.getElementById("tab-niu").className = "mui-control-item class-selected";
+				var otherItem = document.getElementById("tab-news").className = "mui-control-item";
+				if(currentPage == "niu"){
+				}else{
+					currentPage = "niu";
+					if(!ws){ws = plus.webview.currentWebview();}
+					ws.remove(newsPage);
+					ws.append(niuInfoPage);
+				}
+			}else if(eid.indexOf('tab-news') > -1){
+				var thisItem = document.getElementById("tab-news").className = "mui-control-item class-selected";
+				var otherItem = document.getElementById("tab-niu").className = "mui-control-item";
+				if(currentPage == "news"){
+				}else{
+					currentPage = "news";
+					if(!ws){ws = plus.webview.currentWebview();}
+					ws.append(newsPage);
+					ws.remove(niuInfoPage);
+				}
+			}
+		});
+	</script>
+</html>

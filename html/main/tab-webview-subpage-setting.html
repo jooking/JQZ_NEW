@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>岸登</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style>
+			html,body {
+				background-color: #efeff4;
+			}
+			.title{
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+			}
+			.headImg {
+	    			padding-top: 10px;
+	    			padding-bottom: 10px;
+	    			background: url(../../images/bg_me.png);
+	    			background-position: center center; 
+	    			background-size: 100% auto;
+	    		}
+	    		
+	    		.touxiang {
+	    			text-align: center;
+	    		}
+	    		.touxiang div {
+	    			width: 3em;
+	    			height: 3em;
+	    			padding: 0px;
+	    			border-radius: 20%;
+	    			border: 2px solid white;
+	    			color: gray;
+	    			margin: 0px auto;
+	    			margin-bottom: 5px;
+	    		}
+	    		.mui-btn-primary-custom{
+	    			margin-top: 10px;
+	    			color: #fff;
+	    			border:1px solid #fff;
+	    			background-color: #1d2831;
+	    		}
+
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<div class="headImg">
+				<!--<span id="touxiang" class="mui-btn mui-btn-link mui-icon iconfont icon-zhanghao"></span>-->
+				<div class="touxiang">
+					<div >
+						<span id="touxiangimg"  class="mui-icon mui-icon-person" style="font-size: 2.8em; color: white;"></span> 
+					</div>
+					<button id="login" type="button" class="mui-btn mui-btn-primary-custom">登录</button>
+				</div>
+			</div>
+		</div>
+		<div class="mui-content">
+			<!--<div class="title">
+				这是webview模式选项卡中的第4个子页面，该页面展示一个常见的设置示例
+			</div>-->
+			<ul class="mui-table-view">
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">
+						我的消息
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">
+						我的自选
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">
+						我的关注
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">
+						我的博文
+					</a>
+				</li>
+			</ul>
+			<ul class="mui-table-view" style="margin-top: 25px;">
+				<li class="mui-table-view-cell">
+					<a id='setting' class="mui-navigate-right">
+						设置
+					</a>
+				</li>
+			</ul>
+			<!--<ul class="mui-table-view" style="margin-top: 25px;">
+				<li class="mui-table-view-cell">
+					<a id='exit'style="text-align: center;color: #FF3B30;">
+						退出登录
+					</a>
+				</li>
+			</ul>-->
+		</div>
+		</style>
+	</body>
+	<script src="../../js/mui.min.js" charset="UTF-8"></script>
+	<script src="../../js/own.js" charset="UTF-8"></script>
+	<script src="../../js/ajax.js" charset="UTF-8"></script>
+	<script type="text/javascript" charset="UTF-8">
+		mui.init({
+			swipeBack:false //启用右滑关闭功能
+		});
+		//======
+//		var aniShow;
+//		var parentWebView;
+////		var touxiangimg;
+////		var logoutBtn;
+////		var trueimg;
+//		var login;
+//		mui.plusReady(function(){
+//			parentWebView = plus.webview.currentWebview().parent();
+//			aniShow = getaniShow();
+////			touxiangimg = document.getElementById('touxiangimg');
+////			logoutBtn = document.getElementById('logoutBtn');
+////			trueimg = document.getElementById('trueimg');
+//			login = document.getElementById('login');
+//			
+//			//检测是否已经登录
+//			if (!localStorage.getItem('user')) {
+////				logoutBtn.style.display = 'none';
+////				trueimg.style.display = 'none';
+////				touxiangimg.style.display = 'inline';
+////				login.style.color = 'indianred';
+//			}else {
+////				logoutBtn.style.display = 'block';
+////				trueimg.style.display = 'inline';
+////				touxiangimg.style.display = 'none';
+//				var user = JSON.parse(localStorage.getItem('user'));
+////				trueimg.src = user.website_logo;
+////				trueimg.src = '../../images/touxiang.jpg';
+//				login.innerText = user.website_name;
+////				login.style.color = 'black';
+//			}
+//			
+//			mui('.mui-table-view').on('tap','a',function(){
+//				var id = this.getAttribute('href');
+//				var href = this.href;
+//				var title = this.innerText;
+//				var isBars = false;
+//				var barsIcon = '';
+//				
+//				//检测已经存在sessionkey否者运行下面的登陆代码
+//				if (localStorage.getItem('user')) {
+//				}else {
+//					href = "../../login.html";
+//					id = "../../login.html";
+//					aniShow = 'slide-in-bottom';
+//					title = '登录';
+//				}
+//				
+////				if (this.id == 'changeaddress') {
+////					isBars = true;
+////					barsIcon = 'mui-icon iconfont icon-tianjia';
+////				}
+//				
+//				mui.fire(parentWebView,'newWebView',{
+//					id:id,
+//					href:href,
+//					aniShow:aniShow,
+//					title:title,
+//					isBars:isBars,
+//					barsIcon:barsIcon
+//				});
+//			});
+//			
+//			//点击头像登录
+//			login.addEventListener('tap',function(){
+//				if (!localStorage.getItem('user')) {
+//					console.log("木有登录");
+//					var id = "../../login.html";
+//					var href = "../../login.html";
+//					var title = '登录';
+//					var aniShow = 'slide-in-bottom';
+//					var isBars = false;
+//					var barsIcon = '';
+//					
+//					mui.fire(parentWebView,'newWebView',{
+//						id:id,
+//						href:href,
+//						aniShow:aniShow,
+//						title:title,
+//						isBars:isBars,
+//						barsIcon:barsIcon
+//					});
+//				}else {console.log("登录");}
+//			},false);
+//			
+////			//点击等出
+////			logoutBtn.addEventListener('tap',function(){
+////				var account = localStorage.getItem('account');
+////				ajax_logout({
+////					account:account
+////				});
+////			},false);
+//			
+////			//接收登录成功事件
+////			window.addEventListener('loginSuccess',function(){
+////				//登出按钮显示出来 头像图片显示出来名字显示出来
+//////				logoutBtn.style.display = 'block';
+//////				touxiangimg.style.display = 'none';
+//////				trueimg.style.display = 'inline';
+////				var user = JSON.parse(localStorage.getItem('user'));
+//////				trueimg.src = user.website_logo; 
+//////				trueimg.src = '../img/touxiang.jpg';
+////				login.innerText = user.website_name;
+////				login.style.color = 'black';
+////			},false);
+//		});
+//		
+//		//退出登录成功
+////		function logoutSuccess(data){
+////			mui.toast('已经退出登录，需要重新登录');
+////			if (data.code == '000000') {
+////				localStorage.removeItem('user');
+////				logoutBtn.style.display = 'none';
+////				touxiangimg.style.display = 'inline';
+////				trueimg.style.display = 'none';
+////				login.innerText = '请登录';
+////				login.style.color = 'indianred';
+////			}
+////		}
+		//设置按钮
+		(function($, doc) {
+				$.init();
+				$.plusReady(function() {
+					var settingPage = $.preload({
+						"id": 'setting',
+						"url": 'setting.html'
+					});
+					//设置
+					var settingButton = doc.getElementById('setting');
+					//登录
+					var login = document.getElementById('login');
+					//settingButton.style.display = settings.autoLogin ? 'block' : 'none';
+					settingButton.addEventListener('tap', function(event) {
+						$.openWindow({
+							id: 'setting',
+							show: {
+								aniShow: 'pop-in'
+							},
+							styles: {
+								popGesture: 'hide'
+							},
+							waiting: {
+								autoShow: false
+							}
+						});
+					});
+					login.addEventListener('tap', function(event) {
+						$.openWindow({
+							url: '../../html/usr/login.html',
+							id: 'login',
+							preload: true,
+							show: {
+								aniShow: 'pop-in'
+							},
+							styles: {
+								popGesture: 'hide'
+							},
+							waiting: {
+								autoShow: false
+							}
+						});
+					}, false);
+				});
+			}(mui, document));
+	</script>
+</html>

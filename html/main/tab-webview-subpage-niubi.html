@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>金钱庄</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<!--
+			<link rel="stylesheet" type="text/css" href="../../css/app.css"/>
+        -->
+		
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+			}
+			.title {
+				padding: 20px 15px 10px;
+				color: #fff;
+				font-size: 15px;
+				background-color: #fff;
+			}
+			.mui-title-custom {
+				color: #fff;
+			}
+			#topPopover {
+				position: fixed;
+				top: 16px;
+				right: 6px;
+			}
+			#topPopover .mui-popover-arrow {
+				left: auto;
+				right: 6px;
+			}
+			.mui-popover {
+				height: 75px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;background-color: #1d2831">
+			<h1 class="mui-title mui-title-custom">
+				<a href="#topPopover" id="title">牛人社区</a>
+			</h1>
+			<a class="mui-btn mui-btn-link mui-pull-right" id="addBowen">
+				<span class="mui-icon mui-icon-compose" style="color: #FFFFFF;"></span>
+			</a>
+		</header>
+		<div class="mui-content">
+			<div id="slider" class="mui-slider">
+				<div class="mui-slider-group mui-slider-loop">
+					<!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
+					<div class="mui-slider-item mui-slider-item-duplicate">
+						<a href="#">
+							<img src="" id="niubi_img11">
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="" id="niubi_img1">
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="" id="niubi_img2">
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="" id="niubi_img3">
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="" id="niubi_img4">
+						</a>
+					</div>
+					<!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
+					<div class="mui-slider-item mui-slider-item-duplicate">
+						<a href="#">
+							<img src="" id="niubi_img44">
+						</a>
+					</div>
+				</div>
+				<div class="mui-slider-indicator mui-text-right">
+					<div class="mui-indicator mui-active"></div>
+					<div class="mui-indicator"></div>
+					<div class="mui-indicator"></div>
+					<div class="mui-indicator"></div>
+				</div>
+			</div>
+			
+		<div id="topPopover" class="mui-popover" style="width: 150px;background-color: #1d2831;color: #FFFFFF;">
+			<div class="mui-popover-arrow"></div>
+			<div class="mui-scroll-wrapper">
+				<div class="mui-scroll">
+					<ul class="mui-table-view">
+						<li class="mui-table-view-cell" style="height: 30px;text-align: center;background-color: #1d2831;">
+							<a href="javascript:void(0)" id="nav-all">牛人社区</a>
+						</li>
+						<li class="mui-table-view-cell" style="height: 30px;text-align: center;background-color: #1d2831;">
+							<a href="javascript:void(0)" id="nav-mine">我的关注</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../libs/easymob-webim-sdk/jquery-1.11.1.js"></script>
+		<script src="../../js/md5.js"></script>
+		<script>
+			mui.init({
+				swipeBack: false
+			});
+			
+			var network = true;
+			var slider = mui("#slider");
+			slider.slider({interval: 5000});
+			
+			var niubibowen = null;
+			var ws = null;
+			var stop = 0;
+			
+			if (mui.os.plus) {
+				mui.plusReady(function() {
+					var ww = screen.width;
+					var cw = document.documentElement.clientWidth;
+					var pw = plus.screen.resolutionWidth;
+					//var ps = plus.screen.scale;
+					//console.log(ps); 
+					var hh = screen.height;
+					var ch = document.documentElement.clientHeight;
+					var ph = plus.screen.resolutionHeight;
+					//规定上传的图片比例为500：110
+					var t = 110*ww/500 + 43;
+					var ct = 110*cw/500 + 43;
+					
+					if(ct == 0){
+						ct = 110*pw/500 + 43;
+					}
+					if(mui.os.android){
+						stop = ct;
+					}else{
+						stop = t;
+					}
+					createWebview();
+				});
+			} else {
+				mui.ready(function() {
+				});
+			}
+			
+			var success = function(response) {
+				var imgHost = getImageHost();
+				var items = response.data.list;
+				mui.each(items,function(index,item){
+					var i = index+1;
+					var iurl = imgHost+item.dir+item.img_name;
+					$("#niubi_img"+i).attr("src",iurl);
+					if(index==1){
+						$("#niubi_img44").attr("src",iurl);
+					}
+					if(index==4){
+						$("#niubi_img11").attr("src",iurl);
+					}
+					
+				});
+			};
+			
+			function createWebview(){
+				if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+					network = false;
+				}
+				if(network){
+					//mui.toast("niubi-view网络给力，开始了");
+					var url = getServerHost()+"/niu/getNiuSlideImg.do";
+					var timeStamp = getTimeStamp();
+					var msgSignature = getMsgSignature(timeStamp);
+					var data = {
+						timestamp: timeStamp,
+						clientType: "app",
+						msg_signature: msgSignature,
+						type:"niu"
+					};
+					mui.getJSON(url, data, success);
+				}else{
+					mui.toast("niubi-view当前网络不给力，请稍后再试");
+				}
+				ws=plus.webview.currentWebview();
+				niubibowen = plus.webview.create("../niubi/niubi-bowen.html",
+										"niubi-bowen.html",{top: stop+'px',bottom: '0px'});
+				ws.append(niubibowen);
+			}
+			
+			//监听点击事件
+			document.getElementById("nav-all").addEventListener("tap",function () {
+			  mui('.mui-popover').popover('hide');
+			  document.getElementById("title").innerHTML="牛人社区";
+			  if(!niubibowen){niubibowen = plus.webview.getWebviewById('niubi-bowen.html');}
+			  mui.fire(niubibowen,'loadListPage',{loadType:"all"});
+			  if(mui.os.ios){
+					niubibowen.show("slide-in-bottom");
+				}else if(mui.os.android){
+					mui.openWindow({
+						id: 'niubi-bowen.html',
+						show: {aniShow: 'slide-in-bottom'},
+						styles: {popGesture: 'hide'},
+						waiting: {autoShow: false}
+					});
+				}
+			});
+			document.getElementById("nav-mine").addEventListener("tap",function () {
+			  mui('.mui-popover').popover('hide');
+			  document.getElementById("title").innerHTML="我的关注";
+			  if(!niubibowen){niubibowen = plus.webview.getWebviewById('niubi-bowen.html');}
+			  mui.fire(niubibowen,'loadListPage',{loadType:"mine"});
+			  if(mui.os.ios){
+					niubibowen.show("slide-in-bottom");
+				}else if(mui.os.android){
+					mui.openWindow({
+						id: 'niubi-bowen.html',
+						show: {aniShow: 'slide-in-bottom'},
+						styles: {popGesture: 'hide'},
+						waiting: {autoShow: false}
+					});
+				}
+			});
+			document.getElementById("addBowen").addEventListener("tap",function () {
+				ws=plus.webview.currentWebview();
+				var addNewsPage = plus.webview.create("../niubi/addBowen.html","addNews");
+				if(mui.os.ios){
+					addNewsPage.show("slide-in-bottom");
+				}else if(mui.os.android){
+					mui.openWindow({
+						id: 'addNews',
+						show: {aniShow: 'pop-in'},
+						styles: {popGesture: 'hide'},
+						waiting: {autoShow: false}
+					});
+				}
+			});
+		</script>
+	</body>
+</html>

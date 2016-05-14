@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>高手之路详细</title>
+    <link href="../../css/mui.min.css" rel="stylesheet"/>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav" style="padding-right: 15px;background-color: #1d2831">
+		<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+			<span class="mui-icon mui-icon-left-nav" style="color: #FFFFFF;"></span>
+		</button>
+		<h1 class="mui-title" id="header-title" style="color: #FFFFFF;">高手之路</h1>
+	</header>
+	<div class="mui-content" style="color: #1d2831;">
+		<div id="content" style="margin: 10px;"></div>
+	</div>
+</body>
+<script src="../../js/mui.min.js"></script>
+<script type="text/javascript" src="../../js/md5.js" ></script>
+<script type="text/javascript" charset="UTF-8">
+	var network = true;
+    mui.init();
+    window.addEventListener('loadDetail',function(event){
+		//获得事件参数
+		var id = event.detail.id;
+		loadTansuoDetail(id);
+	});
+	function loadTansuoDetail(tsid){
+		if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+			network = false;
+		}
+		if(network){
+			var url = getServerHost()+"/tansuo/getRumenById.do";
+			var timeStamp = getTimeStamp();
+			var msgSignature = getMsgSignature(timeStamp);
+			mui.ajax(url,{
+					data:{
+						timestamp: timeStamp,
+						clientType: "app",
+						msg_signature: msgSignature,
+						gid:tsid,
+						type:"gaoshou"
+					}, 
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data){
+						var obj = data.data.obj;
+						var tit = obj.title;
+						var tent = obj.content;
+						document.getElementById("header-title").innerHTML = tit;
+						document.getElementById("content").innerHTML = tent;
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("请求异常");
+					}
+				});
+		}else{
+			mui.toast("当前网络不给力，请稍后再试" );
+		}
+	}
+</script>
+</html>

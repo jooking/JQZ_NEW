@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>添加评论</title>
+    <link href="../../css/mui.min.css" rel="stylesheet"/>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav" style="background-color: #1d2831">
+		<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+			<span class="mui-icon mui-icon-left-nav" style="color: #FFFFFF;"></span>
+		</button>
+		<a class="mui-btn mui-btn-link mui-pull-right" id="submitPinglun">提交</a>
+		<h1 class="mui-title" style="color: #FFFFFF;">写评论</h1>
+	</header>
+	<div class="mui-content">
+		<div class="mui-input-row" style="margin: 10px 5px;">
+			<textarea id="textarea" rows="10" placeholder="填写评论，不超过140个字符"></textarea>
+		</div>
+	</div>
+</body>
+<script src="../../js/mui.min.js"></script>
+<script type="text/javascript" src="../../js/md5.js" ></script>
+<script type="text/javascript" charset="UTF-8">
+	var network = true;
+	var currentId;
+	var fromPage;
+    mui.init();
+    //添加newId自定义事件监听
+	window.addEventListener('addPinglun',function(event){
+		//获得事件参数
+		var id = event.detail.id;
+		var from = event.detail.from;
+		//根据id向服务器提交评论
+		currentId = id;
+		fromPage = from;
+		document.getElementById("textarea").value = "";
+	});
+	document.getElementById("submitPinglun").addEventListener("tap",function () {
+		var str = document.getElementById("textarea").value;
+		if(str != undefined && str != null && str != ""){
+			var len = str.length;
+			if(len>140){
+				mui.toast("内容太多了哦");
+			}else{
+				addPinglun(str);
+			}
+		}else{
+			mui.toast("还没填写评论内容！");
+		}
+	});
+	function addPinglun(str){
+		if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+			network = false;
+		}
+		if(network){
+			var url = getServerHost()+"/niu/addPinglunReply.do";
+			var timeStamp = getTimeStamp();
+			var msgSignature = getMsgSignature(timeStamp);
+			var token = getToken();
+			mui.ajax(url,{
+				data:{
+					timestamp: timeStamp,
+					clientType: "app",
+					msg_signature: msgSignature,
+					token:token,
+					type:"pl",
+					targetid:currentId,
+					content:str
+				},
+				dataType:'json',//服务器返回json格式数据
+				type:'post',//HTTP请求类型
+				timeout:10000,//超时时间设置为10秒；
+				success:function(data){
+					var res = data.data.content;
+					var currentView = plus.webview.currentWebview();
+					currentView.hide();
+					if(fromPage == "detail"){
+						var detailPage = plus.webview.getWebviewById('bowen-detail.html');
+						mui.fire(detailPage,'overPinglun',{resultStatus:"success"});
+					}
+				},
+				error:function(xhr,type,errorThrown){
+				}
+			});
+		}else{
+			mui.toast("当前网络不给力，请稍后再试" );
+		}
+	}
+</script>
+</html>

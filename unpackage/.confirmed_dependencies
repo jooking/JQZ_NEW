@@ -1,0 +1,311 @@
+{
+	"main.html": {
+		"resources": [
+			"js/app.js",
+			"html/main/tab-webview-subpage-main.html",
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css"
+		],
+		"refer": [
+			"html/main/tab-webview-subpage-niubi.html",
+			"html/main/tab-webview-subpage-price.html",
+			"html/main/tab-webview-subpage-main.html",
+			"setting.html",
+			"html/main/tab-webview-subpage-setting.html",
+			"html/main/tab-webview-subpage-search.html"
+		]
+	},
+	"html/main/tab-webview-subpage-main.html": {
+		"resources": [
+			"images/cbd.jpg",
+			"images/muwu.jpg",
+			"images/yuantiao.jpg",
+			"images/shuijiao.jpg",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/md5.js",
+			"fonts/mui.ttf",
+			"html/niubi/niubi-bowen.html",
+			"html/shouye/niuInfoList.html"
+		],
+		"refer": [
+			"html/niubi/niubi-bowen.html",
+			"html/tansuo/yiguListPage.html",
+			"html/shouye/niuInfoList.html",
+			"html/shouye/news.html",
+			"html/shouye/newsList.html"
+		]
+	},
+	"login.html": {
+		"resources": [
+			"images/bg_login.png",
+			"css/style.css",
+			"images/weixin.png",
+			"images/qq.png",
+			"js/mui.enterfocus.js"
+		],
+		"refer": [
+			"main.html",
+			"forget_password.html",
+			"reg.html"
+		]
+	},
+	"setting.html": {
+		"resources": [
+			"libs/easymob-webim-sdk/easemob.im-1.0.5.js",
+			"libs/easymob-webim-sdk/json2.js",
+			"libs/easymob-webim-sdk/jquery-1.11.1.js",
+			"js/mui.locker.js",
+			"js/feedback.js",
+			"css/feedback-page.css",
+			"js/feedback-page.js",
+			"libs/easymob-webim-sdk/strophe-custom-2.0.0.js",
+			"js/mui.view.js",
+			"images/iconfont-tianjia.png"
+		],
+		"refer": []
+	},
+	"html/main/tab-webview-subpage-setting.html": {
+		"resources": [
+			"js/own.js",
+			"js/ajax.js",
+			"images/bg_me.png",
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css"
+		],
+		"refer": [
+			"login.html",
+			"html/usr/login.html"
+		]
+	},
+	"html/main/tab-webview-subpage-search.html": {
+		"resources": [
+			"images/60x60.gif",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"fonts/mui.ttf",
+			"js/md5.js"
+		],
+		"refer": [
+			"html/tansuo/yiguDetailPage.html",
+			"html/tansuo/gaoshouDetailPage.html",
+			"html/tansuo/yiguListPage.html",
+			"html/tansuo/rumenDetailPage.html",
+			"html/tansuo/rumenListPage.html",
+			"html/tansuo/gaoshouListPage.html"
+		]
+	},
+	"html/usr/login.html": {
+		"resources": [
+			"js/app.js",
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"css/style.css",
+			"js/mui.enterfocus.js",
+			"images/weixin.png",
+			"images/qq.png"
+		],
+		"refer": [
+			"html/usr/reg.html",
+			"html/usr/forget_password.html",
+			"main.html"
+		]
+	},
+	"html/main/tab-webview-subpage-niubi.html": {
+		"resources": [
+			"html/niubi/niubi-slider.html",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"libs/easymob-webim-sdk/jquery-1.11.1.js",
+			"js/md5.js",
+			"html/niubi/niubi-bowen.html",
+			"html/niubi/niubi-bowen2.html",
+			"fonts/mui.ttf"
+		],
+		"refer": [
+			"html/niubi/niubi-slider.html",
+			"html/niubi/niubi-bowen.html",
+			"html/niubi/niubi-bowen2.html",
+			"html/niubi/addNews.html",
+			"html/niubi/addBowen.html"
+		]
+	},
+	"html/niubi/niubi-slider.html": {
+		"resources": [
+			"images/500-111.png",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"images/500-110.png",
+			"js/md5.js",
+			"libs/easymob-webim-sdk/jquery-1.11.1.js"
+		]
+	},
+	"html/niubi/niubi-bowen.html": {
+		"resources": [
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"css/app.css",
+			"images/cbd.jpg",
+			"js/md5.js",
+			"css/iconfont.css",
+			"fonts/iconfont.ttf"
+		],
+		"refer": [
+			"html/niubi/bowen-detail.html",
+			"html/niubi/addPinglun.html"
+		]
+	},
+	"html/niubi/bowen-detail.html": {
+		"resources": [
+			"css/app.css",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"fonts/mui.ttf",
+			"images/500-110.png",
+			"js/md5.js",
+			"js/mui.previewimage.js",
+			"css/iconfont.css",
+			"fonts/iconfont.ttf"
+		]
+	},
+	"html/niubi/niubi-bowen2.html": {
+		"resources": [
+			"css/app.css",
+			"images/cbd.jpg",
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/md5.js",
+			"css/iconfont.css",
+			"fonts/iconfont.ttf"
+		],
+		"refer": [
+			"html/niubi/bowen-detail.html"
+		]
+	},
+	"html/niubi/addPinglun.html": {
+		"resources": [
+			"fonts/mui.ttf",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/md5.js"
+		]
+	},
+	"html/tansuo/yiguListPage.html": {
+		"resources": [
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/md5.js"
+		]
+	},
+	"html/tansuo/rumenListPage.html": {
+		"resources": [
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/md5.js"
+		]
+	},
+	"html/tansuo/gaoshouListPage.html": {
+		"resources": [
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/md5.js"
+		]
+	},
+	"html/tansuo/yiguDetailPage.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/md5.js"
+		]
+	},
+	"html/tansuo/gaoshouDetailPage.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/md5.js",
+			"fonts/mui.ttf"
+		]
+	},
+	"html/tansuo/rumenDetailPage.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/md5.js",
+			"fonts/mui.ttf"
+		]
+	},
+	"html/shouye/niuInfoList.html": {
+		"resources": [
+			"css/app.css",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/md5.js"
+		],
+		"refer": [
+			"html/shouye/niuInfoDetail.html"
+		]
+	},
+	"html/shouye/news.html": {
+		"resources": [
+			"css/app.css",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/md5.js",
+			"fonts/mui.ttf"
+		]
+	},
+	"html/shouye/newsList.html": {
+		"resources": [
+			"css/app.css",
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/md5.js"
+		],
+		"refer": [
+			"html/shouye/newsDetail.html"
+		]
+	},
+	"html/shouye/niuInfoDetail.html": {
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"js/md5.js",
+			"fonts/mui.ttf",
+			"images/cbd.jpg",
+			"images/bg_me.png"
+		]
+	},
+	"html/shouye/newsDetail.html": {
+		"resources": [
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/md5.js"
+		]
+	},
+	"html/niubi/addNews.html": {
+		"resources": [
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css"
+		]
+	},
+	"html/niubi/addBowen.html": {
+		"resources": [
+			"js/common.js",
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css",
+			"js/md5.js"
+		]
+	}
+}

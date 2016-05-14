@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>滚动图</title>
+    <link href="../../css/mui.min.css" rel="stylesheet"/>
+</head>
+<body>
+	<div class="mui-content">
+			<div id="slider" class="mui-slider">
+				<div class="mui-slider-group mui-slider-loop">
+					<!-- 额外增加的一个节点(循环轮播：第一个节点是最后一张轮播) -->
+					<div class="mui-slider-item mui-slider-item-duplicate">
+						<a href="#">
+							<img src="" id="niubi_img44">
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="" id="niubi_img1">
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="" id="niubi_img2">
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="" id="niubi_img3">
+						</a>
+					</div>
+					<div class="mui-slider-item">
+						<a href="#">
+							<img src="" id="niubi_img4">
+						</a>
+					</div>
+					<!-- 额外增加的一个节点(循环轮播：最后一个节点是第一张轮播) -->
+					<div class="mui-slider-item mui-slider-item-duplicate">
+						<a href="#">
+							<img src="" id="niubi_img11">
+						</a>
+					</div>
+				</div>
+				<div class="mui-slider-indicator mui-text-right">
+					<div class="mui-indicator mui-active"></div>
+					<div class="mui-indicator"></div>
+					<div class="mui-indicator"></div>
+					<div class="mui-indicator"></div>
+				</div>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../libs/easymob-webim-sdk/jquery-1.11.1.js"></script>
+		<script src="../../js/md5.js"></script>
+		<script>
+			mui.init({
+				swipeBack: false
+			});
+			var success = function(response) {
+				//response = JSON.stringify(response);
+				var items = response.data.list;
+				mui.each(items,function(index,item){
+					var i = index+1;
+					var iurl = item.host+item.dir+item.img_name;
+					console.log(i+":"+iurl);
+					$("#niubi_img"+i).attr("src",iurl);
+					if(index==1){
+						$("#niubi_img44").attr("src",iurl);
+					}
+					if(index==4){
+						$("#niubi_img11").attr("src",iurl);
+					}
+					
+				}) 
+			};
+			var network = true;
+			var slider = mui("#slider");
+			slider.slider({interval: 5000});
+				if(mui.os.plus){
+					mui.plusReady(function () {
+						console.log("ready");
+						if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+							network = false;
+						}
+						if(network){
+							console.log("开始");
+							var url = getServerHost()+"/niu/getNiuSlideImg.do";
+							var timeStamp = getTimeStamp();
+							var msgSignature = getMsgSignature(timeStamp);
+							var data = {
+								timestamp: timeStamp,
+								clientType: "app",
+								msg_signature: msgSignature
+							};
+							mui.getJSON(url, data, success);
+						}else{
+							mui.toast("当前网络不给力，请稍后再试");
+						}
+					});
+				}
+				
+			//});
+		</script>
+</body>
+</html>

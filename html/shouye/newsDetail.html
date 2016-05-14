@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <link href="../../css/mui.min.css" rel="stylesheet"/>
+    <style>
+    	body{font-size: 14px;margin-top: 0;margin-bottom: 10px;color: #8f8f94;}
+    	img{width: 100%;}
+    	#headertitle {
+			padding: 20px 15px 10px;
+			color: #fff;
+			font-size: 15px;
+		}
+		.mui-title-custom {color: #fff;}
+		
+    </style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav" style="padding-right: 15px;background-color: #1d2831">
+		<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+			<span class="mui-icon mui-icon-left-nav" style="color: #FFFFFF;"></span>
+		</button>
+		<h1 class="mui-title mui-title-custom" >
+			<a href="javascript:;" id="headertitle">新闻资讯</a>
+		</h1>
+	</header>
+	<div class="mui-content" style="border-bottom: 2px solid #1D2831;">
+		<p id="fromUrl" class="mui-ellipsis-1"></p>
+		<p id="create_time" ></p>
+	</div>
+	<div class="mui-content" id="newsContent" style="padding-top: 0px;">
+	</div>
+	<script src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/md5.js" ></script>
+	<script type="text/javascript" charset="UTF-8">
+    	var network = true;
+      	mui.init();
+      	window.addEventListener('initFn',function(event){
+		  //获得事件参数
+		  var id = event.detail.id;
+		  //清空旧数据
+		  clearDetail();
+		  //根据id向服务器请求博文详情
+		  loadNewsInfo(id);
+		});
+		function clearDetail(){
+			document.getElementById("fromUrl").innerHTML="";
+			document.getElementById("create_time").innerHTML="";
+			document.getElementById("newsContent").innerHTML="";
+		}
+		function loadNewsInfo(id){
+			if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+				network = false;
+			}
+			if(network){
+				var url = getServerHost()+"/news/getNewsDetailById.do";
+				var timeStamp = getTimeStamp();
+				var msgSignature = getMsgSignature(timeStamp);
+				var token = getToken();
+				var data = {
+					timestamp: timeStamp,
+					clientType: "app",
+					msg_signature: msgSignature,
+					nid:id
+				};
+				mui.getJSON(url, data, showDetail);
+			}else{
+				mui.toast("当前网络不给力，请稍后再试" );
+			}
+		}
+		var showDetail = function(response){
+			if(response.errcode == 100200){
+				var obj = response.data.obj;
+				document.getElementById("headertitle").innerHTML=obj.title;
+				document.getElementById("fromUrl").innerHTML="转自："+obj.fromUrl;
+				document.getElementById("create_time").innerHTML=obj.create_time;
+				document.getElementById("newsContent").innerHTML=obj.newsContent;
+			}else if(response.errcode == 100402){
+				mui.toast("关键字不足!");
+			}else if(response.errcode == 100404){
+				mui.toast("新闻内容没找到，可能已经失效!");
+			}else{
+				mui.toast("bowen-view:未知");
+			}
+		}
+	</script>
+</body>
+</html>

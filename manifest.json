@@ -1,0 +1,416 @@
+{
+	"@platforms": [
+		"android",
+		"iPhone",
+		"iPad"
+	],
+	"id": "com_all_platform_andeng",
+	"name": "岸登",
+	"version": {
+		"name": "1.0.0",
+		"code": "83"
+	},
+	"description": "",
+	"icons": {
+		"72": "icon.png"
+	},
+	"launch_path": "main.html",
+	"developer": {
+		"name": "309928507@qq.com",
+		"email": "309928507@qq.com",
+		"url": "http://www.dcloud.io"
+	},
+	"permissions": {
+		"Accelerometer": {
+			"description": "访问加速度感应器"
+		},
+		"Cache": {
+			"description": "管理应用缓存"
+		},
+		"Console": {
+			"description": "跟踪调试输出日志"
+		},
+		"Downloader": {
+			"description": "文件下载管理"
+		},
+		"Events": {
+			"description": "应用扩展事件"
+		},
+		"File": {
+			"description": "访问本地文件系统"
+		},
+		"Gallery": {
+			"description": "访问系统相册"
+		},
+		"Invocation": {
+			"description": "使用Native.js能力"
+		},
+		"Orientation": {
+			"description": "访问方向感应器"
+		},
+		"Proximity": {
+			"description": "访问距离感应器"
+		},
+		"Storage": {
+			"description": "管理应用本地数据"
+		},
+		"UI": {},
+		"Uploader": {
+			"description": "管理文件上传任务"
+		},
+		"Runtime": {
+			"description": "访问运行期环境"
+		},
+		"XMLHttpRequest": {
+			"description": "跨域网络访问"
+		},
+		"Zip": {
+			"description": "文件压缩与解压缩"
+		},
+		"Webview": {},
+		"NativeUI": {},
+		"Navigator": {},
+		"NativeObj": {},
+		"Device": {},"OAuth":{},"Share":{}
+	},
+	"plus": {
+		"splashscreen": {
+			"autoclose": true,
+			"waiting": true
+		},
+		"runmode": "liberate",
+		"signature": "Sk9JTiBVUyBtYWlsdG86aHIyMDEzQGRjbG91ZC5pbw\u003d\u003d",
+		"distribute": {
+			"plugins": {
+				"share": {"weixin":{"appid":"","appsecret":"","description":"可选，微信分享"}
+					
+				},
+				"oauth": {"qq":{"appid":"1105296219"},"weixin":{"appid":"wxa83d2c000c56a5b6","appsecret":"3a2759962cf61e971deed9c0ada2b6c2"}
+					
+					
+				}
+			},
+			"apple": {
+				"appid": "",
+				"mobileprovision": "",
+				"password": "",
+				"p12": "",
+				"devices": "universal",
+				"frameworks": []
+			},
+			"google": {
+				"packagename": "",
+				"keystore": "",
+				"password": "",
+				"aliasname": "",
+				"ImmersedStatusbar":true,
+				"permissions": ["<uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\"/>","<uses-permission android:name=\"com.android.launcher.permission.INSTALL_SHORTCUT\"/>","<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>","<uses-permission android:name=\"android.permission.VIBRATE\"/>","<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>","<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>","<uses-permission android:name=\"android.permission.CALL_PHONE\"/>","<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>","<uses-permission android:name=\"com.android.launcher.permission.UNINSTALL_SHORTCUT\"/>"],
+				"custompermissions": true
+			},
+			"orientation": [
+				"portrait-primary",
+				"portrait-secondary"
+			],
+			"icons": {
+				"ios": {
+					"prerendered": "true",
+					"auto": "",
+					"iphone": {
+						"normal": "unpackage/res/icons/57x57.png",
+						"retina": "unpackage/res/icons/114x114.png",
+						"retina7": "unpackage/res/icons/120x120.png",
+						"spotlight-normal": "unpackage/res/icons/29x29.png",
+						"spotlight-retina": "unpackage/res/icons/58x58.png",
+						"spotlight-retina7": "unpackage/res/icons/80x80.png",
+						"settings-normal": "unpackage/res/icons/29x29.png",
+						"settings-retina": "unpackage/res/icons/58x58.png",
+						"retina8": "unpackage/res/icons/180x180.png",
+						"settings-retina8": "unpackage/res/icons/87x87.png"
+					},
+					"ipad": {
+						"normal": "unpackage/res/icons/72x72.png",
+						"retina": "unpackage/res/icons/144x144.png",
+						"normal7": "unpackage/res/icons/76x76.png",
+						"retina7": "unpackage/res/icons/152x152.png",
+						"spotlight-normal": "unpackage/res/icons/50x50.png",
+						"spotlight-retina": "unpackage/res/icons/100x100.png",
+						"spotlight-normal7": "unpackage/res/icons/40x40.png",
+						"spotlight-retina7": "unpackage/res/icons/80x80.png",
+						"settings-normal": "unpackage/res/icons/29x29.png",
+						"settings-retina": "unpackage/res/icons/58x58.png"
+					}
+				},
+				"android": {
+					"mdpi": "unpackage/res/icons/48x48.png",
+					"ldpi": "unpackage/res/icons/48x48.png",
+					"hdpi": "unpackage/res/icons/72x72.png",
+					"xhdpi": "unpackage/res/icons/96x96.png",
+					"xxhdpi": "unpackage/res/icons/144x144.png"
+				}
+			},
+			"splashscreen": {
+				"ios": {
+					"iphone": {},
+					"ipad": {
+						"portrait": "/Applications/HBuilder.app/Contents/configuration/org.eclipse.osgi/bundles/408/1/.cp/icons/hbuilder/ios/splash768x1004.png",
+						"portrait-retina": "/Applications/HBuilder.app/Contents/configuration/org.eclipse.osgi/bundles/408/1/.cp/icons/hbuilder/ios/splash1536x2008.png",
+						"landscape": "/Applications/HBuilder.app/Contents/configuration/org.eclipse.osgi/bundles/408/1/.cp/icons/hbuilder/ios/splash1024x748.png",
+						"landscape-retina": "/Applications/HBuilder.app/Contents/configuration/org.eclipse.osgi/bundles/408/1/.cp/icons/hbuilder/ios/splash2048x1496.png",
+						"portrait7": "",
+						"portrait-retina7": "",
+						"landscape7": "",
+						"landscape-retina7": ""
+					}
+				},
+				"android": {
+
+
+
+					"xhdpi": "/Users/ghf/Desktop/岸登/登录及我的/尺寸图/02-登录-2_MarkMan.png",
+					"xxhdpi": "/Users/ghf/Desktop/岸登/登录及我的/尺寸图/02-登录-2_MarkMan.png"
+				}
+			},
+			"debug": true
+		},
+		"ramcachemode": "enable"
+	},
+	"dependencies": {
+		"pages": {
+			"setting.html": {
+				"href": "setting.html",
+				"resources": [
+					"js/mui.min.js",
+					"js/mui.view.js",
+					"libs/easymob-webim-sdk/jquery-1.11.1.js",
+					"libs/easymob-webim-sdk/strophe-custom-2.0.0.js",
+					"libs/easymob-webim-sdk/json2.js",
+					"libs/easymob-webim-sdk/easemob.im-1.0.5.js",
+					"js/feedback.js",
+					"js/feedback-page.js",
+					"js/mui.locker.js",
+					"js/app.js",
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/feedback-page.css",
+					"images/iconfont-tianjia.png"
+				],
+				"refer": [
+					"html/usr/login.html"
+				],
+				"priority": 1
+			},
+			"main.html": {
+				"href": "main.html",
+				"resources": [
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"js/mui.min.js",
+					"js/app.js",
+					"html/main/tab-webview-subpage-main.html",
+					"html/main/tab-webview-subpage-price.html",
+					"html/main/tab-webview-subpage-niubi.html",
+					"html/main/tab-webview-subpage-search.html",
+					"html/main/tab-webview-subpage-setting.html"
+				],
+				"refer": [
+					"setting.html"
+				],
+				"priority": 1
+			},
+			"html/usr/unlock.html": {
+				"href": "html/usr/unlock.html",
+				"resources": [
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"js/mui.min.js",
+					"js/mui.locker.js",
+					"js/app.js"
+				],
+				"refer": [
+					"html/usr/login.html",
+					"main.html"
+				],
+				"priority": 0
+			},
+			"html/usr/forget_password.html": {
+				"href": "html/usr/forget_password.html",
+				"resources": [
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/style.css",
+					"js/mui.min.js",
+					"js/app.js"
+				],
+				"priority": 1
+			},
+			"html/usr/reg.html": {
+				"href": "html/usr/reg.html",
+				"resources": [
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/style.css",
+					"js/mui.min.js",
+					"js/app.js"
+				],
+				"refer": [
+					"html/usr/login.html"
+				],
+				"priority": 3
+			},
+			"html/usr/login.html": {
+				"href": "html/usr/login.html",
+				"resources": [
+					"css/mui.min.css",
+					"fonts/mui.ttf",
+					"css/style.css",
+					"js/mui.min.js",
+					"js/mui.enterfocus.js",
+					"js/app.js",
+					"images/qihoo.png",
+					"images/qq.png",
+					"images/sinaweibo.png",
+					"images/weixin.png",
+					"images/bg_login.png",
+					"js/ajax.js"
+				],
+				"refer": [
+					"html/usr/unlock.html",
+					"html/usr/forget_password.html",
+					"main.html",
+					"html/usr/reg.html"
+				],
+				"priority": 0
+			},
+			"html/main/tab-webview-subpage-price.html": {
+				"resources": [
+					"images/60x60.gif",
+					"js/mui.min.js"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"html/main/tab-webview-subpage-niubi.html": {
+				"resources": [
+					"images/60x60.gif",
+					"fonts/mui.ttf",
+					"css/mui.min.css",
+					"libs/easymob-webim-sdk/jquery-1.11.1.js",
+					"html/niubi/niubi-bowen.html",
+					"js/md5.js"
+				],
+				"refer": [
+					"html/niubi/addBowen.html"
+				],
+				"priority": 0
+			},
+			"html/main/tab-webview-subpage-search.html": {
+				"resources": [
+					"images/60x60.gif",
+					"js/mui.min.js",
+					"css/mui.min.css"
+				],
+				"refer": [
+					"html/tansuo/yiguDetailPage.html",
+					"html/tansuo/gaoshouDetailPage.html",
+					"html/tansuo/rumenDetailPage.html",
+					"html/tansuo/rumenListPage.html",
+					"html/tansuo/gaoshouListPage.html",
+					"html/tansuo/yiguListPage.html"
+				],
+				"priority": 0
+			},
+			"html/main/tab-webview-subpage-main.html": {
+				"resources": [
+					"js/mui.min.js",
+					"css/mui.min.css",
+					"images/shuijiao.jpg",
+					"images/cbd.jpg",
+					"images/yuantiao.jpg",
+					"images/muwu.jpg",
+					"css/app.css",
+					"html/shouye/niuInfoList.html",
+					"js/md5.js"
+				],
+				"refer": [
+					"html/shouye/newsList.html"
+				],
+				"priority": 0
+			},
+			"html/main/tab-webview-subpage-setting.html": {
+				"resources": [
+					"images/bg_me.png",
+					"js/mui.min.js",
+					"fonts/mui.ttf",
+					"css/mui.min.css",
+					"js/ajax.js",
+					"js/own.js"
+				],
+				"refer": [
+					"html/usr/login.html"
+				],
+				"priority": 0
+			},
+			"html/shouye/niuInfoDetail.html": {
+				"resources": [
+					"images/cbd.jpg"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"html/niubi/bowen-detail.html": {
+				"resources": [
+					"js/mui.previewimage.js",
+					"fonts/iconfont.ttf"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"html/shouye/newsList.html": {
+				"resources": [],
+				"refer": [
+					"html/shouye/newsDetail.html"
+				],
+				"priority": 0
+			},
+			"html/shouye/niuInfoList.html": {
+				"resources": [
+					"css/app.css"
+				],
+				"refer": [
+					"html/shouye/niuInfoDetail.html"
+				],
+				"priority": 0
+			},
+			"html/niubi/niubi-bowen.html": {
+				"resources": [
+					"css/iconfont.css",
+					"css/app.css",
+					"fonts/iconfont.ttf"
+				],
+				"refer": [
+					"html/niubi/addPinglun.html",
+					"html/niubi/bowen-detail.html"
+				],
+				"priority": 0
+			},
+			"html/niubi/addBowen.html": {
+				"resources": [
+					"js/common.js"
+				],
+				"refer": [],
+				"priority": 0
+			}
+		},
+		"idle": {
+			"resources": [
+				"js/service.js",
+				"libs/easymob-webim-sdk/quickstart.md",
+				"images/user-photo.png",
+				"README.md"
+			]
+		}
+	},
+	"unpackage": [
+		"README.md"
+	]
+}

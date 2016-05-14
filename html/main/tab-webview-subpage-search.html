@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>探索</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../css/app.css"/>
+		<style>
+			body{background-color: #1d2831;}
+			.title{margin: 20px 15px 7px;color: #FFFFFF;font-size: 15px;background-color: #1d2831;}
+			#header-title {color: #fff;font-size: 15px;}
+			.mui-icon-little{font-size:14px;font-style:normal;color: #FFFFFF;}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;background-color: #1d2831">
+			<h1 class="mui-title" id="header-title">探索</h1>
+		</header>
+		<div class="mui-content" style="background-color: #1d2831;">
+			<div class="title">
+				每日一股
+				<a id="moreyigu" class="mui-action-menu mui-icon mui-icon-little mui-icon-bars mui-pull-right">更多</a>
+			</div>
+			<div class="mui-card" style="margin-bottom: 35px;background-color: #1d2831">
+				<ul class="mui-table-view" id="yiguList">
+				</ul>
+			</div>
+			<div class="title">
+				股票入门
+				<a id="morerumen" class="mui-action-menu mui-icon mui-icon-little mui-icon-bars mui-pull-right">更多</a>
+			</div>
+			<div class="mui-card" style="margin-bottom: 35px;background-color: #1d2831">
+				<ul class="mui-table-view" id="rumenList">
+				</ul>
+			</div>
+			<div class="title">
+				高手之路
+				<a id="moregaoshou" class="mui-action-menu mui-icon mui-icon-little mui-icon-bars mui-pull-right">更多</a>
+			</div>
+			<div class="mui-card" style="margin-bottom: 35px;background-color: #1d2831">
+				<ul class="mui-table-view" id="gaoshouList">
+				</ul>
+			</div>
+		</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script type="text/javascript" src="../../js/md5.js" ></script>
+	<script>
+		var network = true;
+		mui.init({
+			swipeBack:false //启用右滑关闭功能
+		});
+		var ws=null;
+		var yiguListPage=null;
+		var yiguDetailPage=null;
+		var rumenListPage=null;
+		var rumenDetailPage=null;
+		var gaoshouListPage=null;
+		var gaoshouDetailPage=null;
+		
+		if (mui.os.plus) {
+			mui.plusReady(function() {
+				plusReady();
+				loadYigu();
+				loadRumen();
+				loadGaoshou();
+			});
+		} else {
+			mui.ready(function() {
+			});
+		}
+		function plusReady(){
+			ws=plus.webview.currentWebview(); 
+			yiguListPage=mui.preload({"id": 'yiguListPage.html',"url": '../tansuo/yiguListPage.html'});
+			yiguDetailPage=mui.preload({"id": 'yiguDetailPage.html',"url": '../tansuo/yiguDetailPage.html'});
+			rumenListPage=mui.preload({"id": 'rumenListPage.html',"url": '../tansuo/rumenListPage.html'});
+			rumenDetailPage=mui.preload({"id": 'rumenDetailPage.html',"url": '../tansuo/rumenDetailPage.html'});
+			gaoshouListPage=mui.preload({"id": 'gaoshouListPage.html',"url": '../tansuo/gaoshouListPage.html'});
+			gaoshouDetailPage=mui.preload({"id": 'gaoshouDetailPage.html',"url": '../tansuo/gaoshouDetailPage.html'});
+		}
+		function loadYigu(){
+			if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+					network = false;
+				}
+			if(network){
+				var url = getServerHost()+"/tansuo/getYiguListFromApp.do"; 
+				var timeStamp = getTimeStamp();
+				var msgSignature = getMsgSignature(timeStamp);
+				var token = getToken();
+				mui.ajax(url,{
+					data:{
+						timestamp: timeStamp,
+						clientType: "app",
+						msg_signature: msgSignature,
+						token:token,
+						page:1,
+						pagesize:3
+					}, 
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data){
+						var list = data.data.list;
+						var table = document.getElementById("yiguList");
+						table.innerHTML = "";
+						mui.each(list,function(index,item){
+							table = document.getElementById("yiguList");
+							var li = document.createElement("li");
+							li.className = "mui-table-view-cell";
+							li.id = "yigu"+item.id; 
+							var str = '';
+							str += '<a class="mui-navigate-right yigu-cls">';
+							str += item.use_date.substr(0,10);
+							str += '</a>';
+							li.innerHTML = str;
+							table.appendChild(li);
+						});
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("请求异常");
+					}
+				});
+			}else{
+				mui.toast("当前网络不给力，请稍后再试" );
+			}
+		}
+		function loadRumen(){
+			if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+					network = false;
+				}
+			if(network){
+				var url = getServerHost()+"/tansuo/getRumenListFromApp.do";
+				var timeStamp = getTimeStamp();
+				var msgSignature = getMsgSignature(timeStamp);
+				var token = getToken();
+				mui.ajax(url,{
+					data:{
+						timestamp: timeStamp,
+						clientType: "app",
+						msg_signature: msgSignature,
+						token:token,
+						page:1,
+						pagesize:3,
+						type:"rumen"
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data){
+						var list = data.data.list;
+						var table = document.getElementById("rumenList");
+						table.innerHTML = "";
+						mui.each(list,function(index,item){
+							table = document.getElementById("rumenList");
+							var li = document.createElement("li");
+							li.className = "mui-table-view-cell";
+							li.id = "rumen"+item.id;
+							var str = '';
+							str += '<a class="mui-navigate-right rumen-cls">';
+							str += item.title;
+							str += '</a>';
+							li.innerHTML = str;
+							table.appendChild(li);
+						});
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("请求异常");
+					}
+				});
+			}else{
+				mui.toast("当前网络不给力，请稍后再试" );
+			}
+		}
+		function loadGaoshou(){
+			if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+					network = false;
+				}
+			if(network){
+				var url = getServerHost()+"/tansuo/getRumenListFromApp.do";
+				var timeStamp = getTimeStamp();
+				var msgSignature = getMsgSignature(timeStamp);
+				var token = getToken();
+				mui.ajax(url,{
+					data:{
+						timestamp: timeStamp,
+						clientType: "app",
+						msg_signature: msgSignature,
+						token:token,
+						page:1,
+						pagesize:3,
+						type:"gaoshou"
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data){
+						var list = data.data.list;
+						var table = document.getElementById("gaoshouList");
+						table.innerHTML = "";
+						mui.each(list,function(index,item){
+							table = document.getElementById("gaoshouList");
+							var li = document.createElement("li");
+							li.className = "mui-table-view-cell";
+							li.id = "gaoshou"+item.id;
+							var str = '';
+							str += '<a class="mui-navigate-right gaoshou-cls">';
+							str += item.title;
+							str += '</a>';
+							li.innerHTML = str;
+							table.appendChild(li);
+						});
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("请求异常");
+					}
+				});
+			}else{
+				mui.toast("当前网络不给力，请稍后再试" );
+			}
+		}
+		window.addEventListener('tap', function(event) {
+			var eid = event.target.id;
+			var ecl = event.target.className;
+			if(eid == "moreyigu" || ecl.indexOf('yigu-cls') > -1){
+				if(!yiguListPage){yiguListPage = plus.webview.getWebviewById('yiguListPage.html');}
+				if(mui.os.ios){
+					yiguListPage.show("slide-in-right");
+				}else if(mui.os.android){
+					mui.openWindow({
+						id: 'yiguListPage.html',
+						show: {aniShow: 'slide-in-right'},
+						styles: {popGesture: 'hide'},
+						waiting: {autoShow: false}
+					});
+				}
+			}else if(eid == "morerumen" || ecl.indexOf('rumen-cls') > -1){
+				if(!rumenListPage){rumenListPage = plus.webview.getWebviewById('rumenListPage.html');}
+				if(mui.os.ios){
+					rumenListPage.show("slide-in-right");
+				}else if(mui.os.android){
+					mui.openWindow({
+						id: 'rumenListPage.html',
+						show: {aniShow: 'slide-in-right'},
+						styles: {popGesture: 'hide'},
+						waiting: {autoShow: false}
+					});
+				}
+			}else if(eid == "moregaoshou" || ecl.indexOf('gaoshou-cls') > -1){
+				if(!gaoshouListPage){gaoshouListPage = plus.webview.getWebviewById('gaoshouListPage.html');}
+				if(mui.os.ios){
+					gaoshouListPage.show("slide-in-right");
+				}else if(mui.os.android){
+					mui.openWindow({
+						id: 'gaoshouListPage.html',
+						show: {aniShow: 'slide-in-right'},
+						styles: {popGesture: 'hide'},
+						waiting: {autoShow: false}
+					});
+				}
+			}
+		});
+	</script>
+</html>

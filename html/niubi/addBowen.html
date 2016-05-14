@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>添加博文</title>
+    <link href="../../css/mui.min.css" rel="stylesheet"/>
+    <style>
+    	.button {
+			font-size: 18px;
+			font-weight: normal;
+			text-decoration: none;
+			display: block;
+			text-align: center;
+			overflow:hidden;
+			text-overflow:ellipsis;
+			white-space:nowrap;
+			color: #FFF;
+			background-color: #FFCC33;
+			border: 1px solid #ECB100;
+			padding: .5em 0em;
+			margin: .5em .7em;
+			-webkit-border-radius: 5px;
+			border-radius: 5px;
+		}
+		.button:active {
+			outline: 0;
+		  	-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+			box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+		}
+		.button-waring {
+			color: #666;
+			background-color: #ebebeb;
+			border-color: #e0e0e0;
+		}
+		.button-select {
+			font-size: 14px;
+			background-color: #CCCCCC;
+			border: 0;
+			-webkit-border-radius: 2px;
+			border-radius: 2px;
+		}
+    	.button-select {
+			font-size: 14px;
+			background-color: #CCCCCC;
+			border: 0;
+			-webkit-border-radius: 2px;
+			border-radius: 2px;
+		}
+    </style>
+    <script type="text/javascript" src="../../js/common.js"></script>
+    <script type="text/javascript" src="../../js/md5.js" ></script>
+    <script type="text/javascript">
+    	var server=getServerHost()+"/BowenServlet";
+//		var server="http://192.168.1.102:80/image-file-server/UploadServlet"
+		var files=[];
+		// 拍照添加文件
+		function appendByCamera(){
+			plus.camera.getCamera().captureImage(function(p){
+				appendFile(p);
+			});	
+		}
+		// 从相册添加文件
+		function appendByGallery(){
+			plus.gallery.pick(function(p){
+		        appendFile(p);
+		    });
+		}
+		// 添加文件
+		var index=1;
+		function appendFile(p){
+			var fe=document.getElementById("files");
+			var li=document.createElement("li");
+			var n=p.substr(p.lastIndexOf('/')+1);
+			li.innerText=n;
+			fe.appendChild(li);
+			files.push({name:"uploadkey"+index,path:p});
+			index++;
+			empty.style.display="none";
+		}
+		// 产生一个随机数
+		function getUid(){
+			return Math.floor(Math.random()*100000000+10000000).toString();
+		}
+    </script>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav" style="background-color: #1d2831">
+		<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+			<span class="mui-icon mui-icon-left-nav" style="color: #FFFFFF;"></span>
+		</button>
+		<a class="mui-btn mui-btn-link mui-pull-right" id="submitBowen" style="color: yellow;">提交</a>
+		<h1 class="mui-title" style="color: #FFFFFF;">写博文</h1>
+	</header>
+	<div class="mui-content">
+		<div class="mui-input-row">&nbsp; </div>
+		<div class="mui-input-row">
+			<input type="text" placeholder="请输入标题" id="newsTitle">
+		</div>
+		<div class="mui-input-row" style="margin: 10px 5px;">
+			<textarea id="textarea" rows="10" placeholder="请输入内容"></textarea>
+		</div>
+		<div class="mui-input-row" style="margin: 10px 5px;">
+			<ul id="files" style="text-align:left;">
+				<p id="empty" style="font-size:12px;color:#C6C6C6;">选择上传图片</p>
+			</ul>
+			<div class="button button-select" onclick="appendByCamera()">拍照</div>
+			<div class="button button-select" onclick="appendByGallery()">相册选取</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="../js/immersed.js" ></script>
+	<script src="../../js/mui.min.js"></script>	
+	<script>
+		document.getElementById("submitBowen").addEventListener("tap",function () {
+			addBowen();
+		});
+		var wt= null;
+		function addBowen(){
+			if(files.length<=0){
+//				plus.nativeUI.alert("没有添加上传文件！");
+//				return;
+			}
+			wt=plus.nativeUI.showWaiting();
+			var task=plus.uploader.createUpload(server,
+				{method:"POST"},
+				function(t,status){ //上传完成
+					if(status==200){
+						resultFn(t.responseText);
+					}else{
+						outLine("上传失败："+status);
+						wt.close();
+					}
+				}
+			);
+			var timeStamp = getTimeStamp();
+			var msgSignature = getMsgSignature(timeStamp);
+			var nt = document.getElementById("newsTitle").value;
+			var nn = document.getElementById("textarea").value;
+			task.addData("token",getToken());
+			task.addData("timestamp",timeStamp);
+			task.addData("clientType","app");
+			task.addData("msg_signature",msgSignature);
+			task.addData("newsTitle",nt);
+			task.addData("newsContent",nn);
+			for(var i=0;i<files.length;i++){
+				var f=files[i];
+				task.addFile(f.path,{key:f.name});
+			}
+			task.addEventListener( "statechanged", onStateChanged, false );
+			task.start();
+		}
+		// 监听上传任务状态
+		function onStateChanged( upload, status ) {
+//			mui.toast(upload.state+"    "+status)
+		}
+		function resultFn(str){
+			if(!str){
+				mui.toast("请求出错！");
+			}else{
+				var j=JSON.parse(str);
+				if(j.errcode == 100200){
+					mui.toast("成功");
+					wt.close();
+					closeAdd();
+				}else if(j.errcode == 100402){
+					mui.toast("参数为空，请再次确认！");
+				}else if(j.errcode == 100501){
+					mui.toast("文件 "+j.data.content+" 的格式不对，只能上传图片文件！");
+				}else if(j.errcode == 100404){
+					mui.toast("用户信息错误，请重新登录！");
+				}else if(j.errcode == 100500){
+					mui.toast("上传失败，请稍后再试！");
+				}
+			}
+		}
+		function closeAdd(){
+			var niubipage = detailPage = plus.webview.getWebviewById('niubi-bowen.html');
+			mui.fire(niubipage,'dowRePage',{type:"yes"});
+			mui.back();
+		}
+	</script>
+</body>
+</html>

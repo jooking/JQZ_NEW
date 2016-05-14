@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>博文列表</title>
+    <link href="../../css/mui.min.css" rel="stylesheet"/>
+    <link href="../../css/app.css" rel="stylesheet"/>
+    <link href="../../css/iconfont.css" rel="stylesheet" />
+    <style>
+    	.mui-media-body-mine{height: 130px;}
+    	.mui-ellipsis-3{display:-webkit-box;overflow:hidden;white-space:normal!important;text-overflow:ellipsis;word-wrap:break-word;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+    	.a-btn{width: 50%;font-size:12px;font-weight:200;line-height:1.42;display:inline-block;margin-bottom:0;padding:6px 12px;cursor:pointer;-webkit-transition:all;transition:all;-webkit-transition-timing-function:linear;transition-timing-function:linear;-webkit-transition-duration:.2s;transition-duration:.2s;text-align:center;vertical-align:top;white-space:nowrap;color:#999999;border-radius:3px;border-top-left-radius:3px;border-top-right-radius:3px;border-bottom-right-radius:3px;border-bottom-left-radius:3px;background-color:#FFFFFF;background-clip:padding-box}
+    	.li-bot{border-bottom: solid 15px #999999;}
+    	.mui-icon-little{font-size:18px;font-style:normal;}
+    </style>
+</head>
+<body>
+	<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<!--数据列表-->
+				<ul class="mui-table-view">
+					
+				</ul>
+			</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/md5.js"></script>
+		<script>
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						callback: pulldownRefresh
+					},
+					up: {
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
+			});
+			var imgHost = getImageHost();
+			
+			var detailIsOpen = false;
+			var ws=null;
+			var detailPage=null;
+			var pinglunPage=null;
+			
+			var onloadType = "all";
+			
+			function plusReady(){
+				ws=plus.webview.currentWebview();
+//				detailPage=plus.webview.create('bowen-detail.html','bowen-detail.html',{scrollIndicator:'none',scalable:false,popGesture:'none'},{preate:true});
+				detailPage=mui.preload({"id": 'bowen-detail.html',"url": 'bowen-detail.html'});
+				pinglunPage=mui.preload({"id": 'addPinglun.html',"url": 'addPinglun.html'});
+//				detailPage.addEventListener( "close", function(e){mui.toast("detai页关闭了");detailIsOpen = false;},false);
+//				detailPage.addEventListener( "hide", function(e){mui.toast("detai页隐藏了");detailIsOpen = false;},false);
+//				detailPage.addEventListener( "show", function(e){mui.toast("detai页打开了");detailIsOpen = true;},false);
+//				detailPage.addEventListener( "loading", function(e){mui.toast("detai页开始加载了");detailIsOpen = true;},false);
+			}
+			window.addEventListener('dowRePage',function(event){
+			  	//获得事件参数
+			  	var ifRefresh = event.detail.type;
+			  
+			  	if(ifRefresh == "yes"){
+			  		pulldownRefresh();
+			  	}
+			});
+			window.addEventListener('loadListPage',function(event){
+			  	//获得事件参数
+			  	onloadType = event.detail.loadType;
+			  
+			  	//根据id向服务器请求博文详情
+			  	bwpn = 1;
+			  	var table = document.body.querySelector('.mui-table-view');
+			  	table.innerHTML = "";
+				uploadBowenList();
+			});
+			var bwpn = 1;
+			var pagesize = 10;
+			var beginTime;
+			var allcount=11;
+			/**
+			 * 下拉刷新具体业务实现
+			 */
+			function pulldownRefresh() {
+				//下拉刷新，如果小于10条数据，则一次性加载进去，否则，加载该10条数据后，把之前的清除
+				downloadBowenList();
+				mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
+			}
+			var count = 0;
+			/**
+			 * 上拉加载具体业务实现
+			 */
+			function pullupRefresh() {
+				bwpn++;
+				uploadBowenList();
+				mui('#pullrefresh').pullRefresh().endPullupToRefresh(allcount-((bwpn-1)*pagesize) <= 0); //参数为true代表没有更多数据了。
+			}
+			var network = true;
+			if (mui.os.plus) {
+				mui.plusReady(function() {
+					bwpn = 1;
+					uploadBowenList();
+					plusReady();
+				});
+			} else {
+				mui.ready(function() {
+					//mui('#pullrefresh').pullRefresh().pullupLoading(); 
+					bwpn = 1;
+					uploadBowenList();
+					plusReady();
+				});
+			}
+			function uploadBowenList(){
+				if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+					network = false;
+				}
+				if(network){
+					var url = getServerHost()+"/niu/getBowenList.do";
+					var timeStamp = getTimeStamp();
+					var msgSignature = getMsgSignature(timeStamp);
+					var token = getToken();
+					var data = {
+						timestamp: timeStamp,
+						clientType: "app",
+						msg_signature: msgSignature,
+						token:token,
+						page:bwpn,
+						pagesize:pagesize,
+						type:onloadType,
+						beginTime:beginTime,
+						loadType:"up"
+					};
+					mui.getJSON(url, data, uploadbw);
+				}else{
+					mui.toast("当前网络不给力，请稍后再试" );
+				}
+			}
+			var uploadbw = function(response) {
+				if(response.errcode == 100200){
+					var currentPage = response.data.pageNo;
+					if(currentPage == 1){
+						allcount = response.data.allCount;
+					}
+					var items = response.data.list;
+					mui.each(items,function(index,item){
+						if(currentPage == 1 && index == 0){
+							beginTime = item.create_time;
+						}
+						var table = document.body.querySelector('.mui-table-view');
+						//var cells = document.body.querySelectorAll('.mui-table-view-cell');
+						var li = document.createElement('li');
+						li.className = 'mui-table-view-cell mui-media li-bot';
+						li.id = 'li'+item.bowen_id;
+						var innerStr = '<a href="javascript:;" id="neirong'+item.bowen_id+'">';
+						innerStr += '<img class="mui-media-object mui-pull-left" src="'+imgHost+item.user_pic+'" />';
+						if(item.if_guanzhu == 0){
+							innerStr += '<button type="button" class="mui-pull-right" id="guanzhu'+item.bowen_id+'"><span class="mui-icon mui-icon-little mui-icon-plus">关注</span></button>';
+						}
+						innerStr += '<div class="mui-media-body-mine" id="detail'+item.bowen_id+'" >'+item.nick_name;
+						innerStr += '<h6>'+item.create_time+'</h6>'; 
+						innerStr += '<p class="mui-ellipsis-3">'+item.content+'</p>';
+						innerStr += '</div></a>'; 
+						innerStr += '<a href="javascript:;" id="pinglun'+item.bowen_id+'" class="mui-pull-left a-btn" style="color: #999999;" ><span class="mui-icon mui-icon-little mui-icon-chat">评论</span></a>';
+						innerStr += '<a href="javascript:;" id="zan'+item.bowen_id+'" class="mui-pull-right a-btn" style="color: #999999;"><span class="mui-icon iconfont icon-appreciate" id="dianzan'+item.bowen_id+'">点赞('+item.zan_cnt+')</span></a>';
+						li.innerHTML = innerStr;
+						table.appendChild(li);
+					});
+				}else if(response.errcode == 100402){
+					mui.toast("bowen-view关键字不足!");
+				}else if(response.errcode == 100404){
+					mui.toast("bowen-view没找到!");
+				}else{
+					mui.toast("bowen-view:未知");
+				}
+			}
+			function downloadBowenList(){
+				if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+					network = false;
+				}
+				if(network){
+					var url = getServerHost()+"/niu/getBowenList.do";
+					var timeStamp = getTimeStamp();
+					var msgSignature = getMsgSignature(timeStamp);
+					var token = getToken();
+					var data = {
+						timestamp: timeStamp,
+						clientType: "app",
+						msg_signature: msgSignature,
+						token:token,
+						page:bwpn,
+						pagesize:10,
+						type:onloadType,
+						beginTime:beginTime,
+						loadType:"down"
+					};
+					mui.getJSON(url, data, downloadbw);
+				}else{
+					mui.toast("bowen-view当前网络不给力，请稍后再试" );
+				}
+			}
+			var downloadbw = function(response) {
+				if(response.errcode == 100200){
+					var newCount = response.data.allCount;
+					if(newCount == 0){
+						mui.toast("已经是最新的数据了！");
+					}else if(newCount >= 1 && newCount <= 10){
+						var items = response.data.list;
+						allcount = allcount+newCount;
+						mui.each(items,function(index,item){
+							if(index == 0){
+								beginTime = item.create_time;
+								bwpn++;
+							}
+							var table = document.body.querySelector('.mui-table-view');
+							//var cells = document.body.querySelectorAll('.mui-table-view-cell');
+							var li = document.createElement('li');
+							li.className = 'mui-table-view-cell mui-media li-bot';
+							li.id = 'li'+item.bowen_id;
+							var innerStr = '<a href="javascript:;" id="neirong'+item.bowen_id+'">';
+							innerStr += '<img class="mui-media-object mui-pull-left" src="'+imgHost+item.user_pic+'" />';
+							if(item.if_guanzhu == 0){
+								innerStr += '<button type="button" class="mui-pull-right" id="guanzhu'+item.bowen_id+'"><span class="mui-icon mui-icon-little mui-icon-plus">关注</span></button>';
+							}
+							innerStr += '<div class="mui-media-body-mine" id="detail'+item.bowen_id+'" >'+item.nick_name;
+							innerStr += '<h6>'+item.create_time+'</h6>'; 
+							innerStr += '<p class="mui-ellipsis-3">'+item.content+'</p>';
+							innerStr += '</div></a>'; 
+							innerStr += '<a href="javascript:;" id="pinglun'+item.bowen_id+'" class="mui-pull-left a-btn" style="color: #999999;" ><span class="mui-icon mui-icon-little mui-icon-chat">评论</span></a>';
+							innerStr += '<a href="javascript:;" id="zan'+item.bowen_id+'" class="mui-pull-right a-btn" style="color: #999999;"><span class="mui-icon iconfont icon-appreciate" id="dianzan'+item.bowen_id+'">点赞('+item.zan_cnt+')</span></a>';
+							li.innerHTML = innerStr;
+							table.insertBefore(li, table.firstChild);
+						});
+					}else{
+						//清空列表
+						var table = document.body.querySelector('.mui-table-view');
+						table.innerHTML = "";
+						
+						bwpn = 1;
+						allcount = allcount+newCount;
+						var items = response.data.list;
+						mui.each(items,function(index,item){
+							if(index == 0){
+								beginTime = item.create_time; 
+							}
+							var table = document.body.querySelector('.mui-table-view');
+							//var cells = document.body.querySelectorAll('.mui-table-view-cell');
+							var li = document.createElement('li');
+							li.className = 'mui-table-view-cell mui-media li-bot';
+							li.id = 'li'+item.bowen_id;
+							var innerStr = '<a href="javascript:;" id="neirong'+item.bowen_id+'">';
+							innerStr += '<img class="mui-media-object mui-pull-left" src="'+imgHost+item.user_pic+'" />';
+							if(item.if_guanzhu == 0){
+								innerStr += '<button type="button" class="mui-pull-right" id="guanzhu'+item.bowen_id+'"><span class="mui-icon mui-icon-little mui-icon-plus">关注</span></button>';
+							}
+							innerStr += '<div class="mui-media-body-mine" id="detail'+item.bowen_id+'" >'+item.nick_name;
+							innerStr += '<h6>'+item.create_time+'</h6>'; 
+							innerStr += '<p class="mui-ellipsis-3">'+item.content+'</p>';
+							innerStr += '</div></a>'; 
+							innerStr += '<a href="javascript:;" id="pinglun'+item.bowen_id+'" class="mui-pull-left a-btn" style="color: #999999;" ><span class="mui-icon mui-icon-little mui-icon-chat"></span></a>';
+							innerStr += '<a href="javascript:;" id="zan'+item.bowen_id+'" class="mui-pull-right a-btn" style="color: #999999;"><span class="mui-icon iconfont icon-appreciate" id="dianzan'+item.bowen_id+'">点赞('+item.zan_cnt+')</span></a>';
+							li.innerHTML = innerStr;
+							table.appendChild(li);
+						});
+					}
+				}else if(response.errcode == 100402){
+					mui.toast("bowen-view关键字不足!");
+				}else if(response.errcode == 100404){
+					mui.toast("bowen-view没找到!");
+				}else{
+					mui.toast("bowen-view:未知");
+				}
+			}
+			
+			// 关闭窗口
+			function preateBack(){
+				detailPage.hide();
+			}
+			window.back=preateBack;
+			
+			
+			window.addEventListener('tap', function(event) {
+				var eid = event.target.id;
+				var ecl = event.target.className;
+				var bwid;
+				if(ecl.indexOf('mui-icon-chat') > -1){
+					var prid = event.target.parentElement.id;
+					bwid = prid.substr(7);//pinglunID
+					pinglunFn(bwid);
+				}else if(eid.indexOf('pinglun') > -1){
+					bwid = eid.substr(7);//pinglunID
+					pinglunFn(bwid);
+				}else if(ecl.indexOf('mui-ellipsis-3') > -1){
+					var prid = event.target.parentElement.id;
+					bwid = prid.substr(6);//detailID
+					detailPageFn(bwid);
+				}else if(eid.indexOf('detail') > -1){
+					bwid = eid.substr(6);//detailID
+					detailPageFn(bwid);
+				}else if(ecl.indexOf('icon-appreciate') > -1){
+					var prid = event.target.parentElement.id;
+					bwid = prid.substr(3);//zanID
+					zanFn(bwid);
+				}else if(eid.indexOf('zan') > -1){
+					bwid = eid.substr(3);//zanID
+					zanFn(bwid);
+				}else if(ecl.indexOf('mui-icon-plus') > -1){
+					var prid = event.target.parentElement.id;
+					bwid = prid.substr(7);//guanzhuID
+					guanzhuFn(bwid);
+				}else if(eid.indexOf('guanzhu') > -1){
+					bwid = eid.substr(7);
+					guanzhuFn(bwid);
+				}else{
+					mui.toast(eid);
+				}
+			});
+			function detailPageFn(bwid){
+				//获得详情页面
+				if(!detailPage){detailPage = plus.webview.getWebviewById('bowen-detail.html');}
+				//触发详情页面的newsId事件
+				mui.fire(detailPage,'initDetailPage',{id:bwid});
+				if(mui.os.ios){
+					detailPage.show("slide-in-bottom");
+				}else if(mui.os.android){
+					mui.openWindow({
+						id: 'bowen-detail.html',
+						show: {aniShow: 'pop-in'},
+						styles: {popGesture: 'hide'},
+						waiting: {autoShow: false}
+					});
+				}
+			}
+			function zanFn(bwid){
+				if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+					network = false;
+				}
+				if(network){
+					var url = getServerHost()+"/niu/addZanByBowenId.do";
+					var timeStamp = getTimeStamp();
+					var msgSignature = getMsgSignature(timeStamp);
+					var token = getToken();
+					var data = {
+						timestamp: timeStamp,
+						clientType: "app",
+						msg_signature: msgSignature,
+						token:token,
+						bid:bwid
+					};
+					mui.getJSON(url, data, addZan);
+				}else{
+					mui.toast("当前网络不给力，请稍后再试" );
+				}	
+			}
+			var addZan = function(response) {
+				if(response.errcode == 100200){
+					var obj = response.data.obj;
+					var objid = obj.id;
+					mui.toast(objid);
+					var trg = document.getElementById("dianzan"+objid);
+					trg.innerHTML = "点赞("+obj.zan_cnt+")";
+				}else if(response.errcode == 100402){
+					mui.toast("bowen-view关键字不足!");
+				}else if(response.errcode == 100404){
+					mui.toast("bowen-view没找到!");
+				}else{
+					mui.toast("bowen-view:未知");
+				}
+			}
+			function pinglunFn(bwid){
+				if(!pinglunPage){pinglunPage = plus.webview.getWebviewById('addPinglun.html');}
+				mui.fire(pinglunPage,'addPinglun',{id:bwid,from:"list"});
+				if(mui.os.ios){
+					pinglunPage.show("slide-in-bottom");
+				}else if(mui.os.android){
+					mui.openWindow({
+						id: 'addPinglun.html',
+						show: {aniShow: 'slide-in-bottom'},
+						styles: {popGesture: 'hide'},
+						waiting: {autoShow: false}
+					});
+				}
+			}
+			function guanzhuFn(bwid){
+				if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+					network = false;
+				}
+				if(network){ 
+					var url = getServerHost()+"/niu/addGuanzhu.do";
+					var timeStamp = getTimeStamp();
+					var msgSignature = getMsgSignature(timeStamp);
+					var token = getToken();
+					var data = {
+						timestamp: timeStamp,
+						clientType: "app",
+						msg_signature: msgSignature,
+						token:token,
+						bwid:bwid
+					};
+					mui.getJSON(url, data, addGuanzhu);
+				}else{
+					mui.toast("当前网络不给力，请稍后再试" );
+				}	
+			}
+			var addGuanzhu = function(response) {
+				if(response.errcode == 100200){
+					var obj = response.data.obj;
+					var trg = document.getElementById("guanzhu"+obj.id);
+					trg.innerHTML = "";
+				}else if(response.errcode == 100402){
+					mui.toast("bowen-view关键字不足!");
+				}else if(response.errcode == 100404){
+					mui.toast("bowen-view没找到!");
+				}else{
+					mui.toast("bowen-view:未知");
+				}
+			}
+		</script>
+</body>
+</html>
