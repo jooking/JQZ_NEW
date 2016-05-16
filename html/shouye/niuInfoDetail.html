@@ -66,8 +66,8 @@
 			<span class="mui-tab-label">胜率</span><br />
 		</div>
 	</div>
-	<div class="mui-content align-center">
-		<img src="../../images/bg_me.png" width="95%" id="winUrl"/>
+	<div class="mui-content align-center" id="winUrl">
+		<img src="../../images/bg_me.png" width="95%" />
 	</div>
 	<div class="mui-content">
 		<div class="width-50">
@@ -116,6 +116,7 @@
 				document.getElementById("allInCome").innerHTML = "+00.00%";
 				document.getElementById("rank").innerHTML = "第0名";
 				document.getElementById("winRate").innerHTML = "+00.00%";
+				document.getElementById("winUrl").innerHTML = "<img src='../../images/bg_me.png' width='100px'/>";
 				document.getElementById("allMoney").innerHTML = "总资产&nbsp;&nbsp;0元";
 				document.getElementById("gupiaoMoney").innerHTML = "股票市值0元";
 				document.getElementById("useMoney").innerHTML = "可用资金0元";
@@ -150,6 +151,7 @@
 		var showDetail = function(response){
 			if(response.errcode == 100200){
 				var obj = response.data.obj;
+				mui.toast(getImageHost()+obj.pic_url);
 				document.getElementById("pic_url").innerHTML = '<img src="'+getImageHost()+obj.pic_url+'" width="100px"/> ';
 				document.getElementById("title").innerHTML = obj.nick_name;
 				document.getElementById("nick_name").innerHTML = obj.nick_name;
@@ -159,6 +161,7 @@
 				document.getElementById("allInCome").innerHTML = obj.allInCome+"+00.00%";
 				document.getElementById("rank").innerHTML = "第"+obj.rank+"名";
 				document.getElementById("winRate").innerHTML = obj.winRate;
+				document.getElementById("winUrl").innerHTML = '<img src="'+getImageHost()+obj.winUrl+'" width="100px"/> ';
 				document.getElementById("allMoney").innerHTML = "总资产&nbsp;&nbsp;"+obj.allMoney+"元";
 				document.getElementById("gupiaoMoney").innerHTML = "股票市值"+obj.gupiaoMoney+"元";
 				document.getElementById("useMoney").innerHTML = "可用资金"+obj.useMoney+"元";
