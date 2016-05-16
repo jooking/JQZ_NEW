@@ -177,8 +177,14 @@
 				}else{
 					currentPage = "niu";
 					if(!ws){ws = plus.webview.currentWebview();}
-					ws.remove(newsPage);
-					ws.append(niuInfoPage);
+					
+					if(mui.os.ios){
+						ws.append(niuInfoPage);
+						plus.webview.show("niuInfoList");
+					}else{
+						ws.remove(newsPage);
+						ws.append(niuInfoPage);
+					}
 				}
 			}else if(eid.indexOf('tab-news') > -1){
 				var thisItem = document.getElementById("tab-news").className = "mui-control-item class-selected";
@@ -187,8 +193,14 @@
 				}else{
 					currentPage = "news";
 					if(!ws){ws = plus.webview.currentWebview();}
-					ws.append(newsPage);
-					ws.remove(niuInfoPage);
+					
+					if(mui.os.ios){
+						ws.append(newsPage);
+						plus.webview.show("news");
+					}else{
+						ws.remove(niuInfoPage);
+						ws.append(newsPage);
+					}
 				}
 			}
 		});
