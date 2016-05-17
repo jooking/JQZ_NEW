@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>详情</title>
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<meta http-equiv="content-security-policy">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	</head>
+		<link rel="stylesheet" href="../../css/mui.css">
+		<link rel="stylesheet" href="../../css/detail.css">
+		<link rel="stylesheet" href="../../css/iconfont.css">
+		<style>
+		.mui-preview-image.mui-fullscreen {
+				position: fixed;
+				z-index: 20;
+				background-color: #FFFFFF;
+				
+			}
+			.mui-preview-header,
+			.mui-preview-footer {
+				position: absolute;
+				width: 100%;
+				left: 0;
+				z-index: 10;
+			}
+			.mui-preview-header {
+				height: 44px;
+				top: 0;
+			}
+			.mui-preview-footer {
+				height: 50px;
+				bottom: 0px;
+			}
+			.mui-preview-header .mui-preview-indicator {
+				display: block;
+				line-height: 25px;
+				color: #fff;
+				text-align: center;
+				margin: 15px auto 4;
+				width: 70px;
+				background-color: rgba(0, 0, 0, 0.4);
+				border-radius: 12px;
+				font-size: 16px;
+			}
+			.mui-preview-image {
+				display: none;
+				-webkit-animation-duration: 0.5s;
+				animation-duration: 0.5s;
+				-webkit-animation-fill-mode: both;
+				
+				animation-fill-mode: both;
+			}
+			.mui-preview-image.mui-preview-in {
+				-webkit-animation-name: fadeIn;
+				animation-name: fadeIn;
+			}
+			.mui-preview-image.mui-preview-out {
+				background: none;
+				-webkit-animation-name: fadeOut;
+				animation-name: fadeOut;
+			}
+			.mui-preview-image.mui-preview-out .mui-preview-header,
+			.mui-preview-image.mui-preview-out .mui-preview-footer {
+				display: none;
+			}
+			.mui-zoom-scroller {
+				position: absolute;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+				-webkit-box-pack: center;
+				-webkit-justify-content: center;
+				justify-content: center;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				-webkit-backface-visibility: hidden;
+			}
+			.mui-zoom {
+				-webkit-transform-style: preserve-3d;
+				transform-style: preserve-3d;
+				-webkit-transform:rotate(90deg);
+			}
+			.mui-slider .mui-slider-group .mui-slider-item img {
+				width: auto;
+				height: auto;
+				max-width: 100%;
+				max-height: 100%;
+				object-fit: inherit;
+			}
+			.mui-android-4-1 .mui-slider .mui-slider-group .mui-slider-item img {
+				width: 100%;
+			}
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-slider-group .mui-slider-item {
+				display: inline-table;
+			}
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-zoom-scroller img {
+				display: table-cell;
+				vertical-align: middle;
+			}
+			.mui-preview-loading {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				display: none;
+			}
+			.mui-preview-loading.mui-active {
+				display: block;
+			}
+			.mui-preview-loading .mui-spinner-white {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				margin-left: -25px;
+				margin-top: -25px;
+				height: 50px;
+				width: 50px;
+			}
+			.mui-preview-image img.mui-transitioning {
+				-webkit-transition: -webkit-transform 0.5s ease, opacity 0.5s ease;
+				transition: transform 0.5s ease, opacity 0.5s ease;
+			}
+			@-webkit-keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}
+			@keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+				100% {
+					opacity: 1;
+				}
+			}
+			@-webkit-keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			}
+			@keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+				100% {
+					opacity: 0;
+				}
+			}
+			p img {
+				max-width: 100%;
+				height: auto;
+			}
+			.mui-slider-img-content {
+				position: absolute;
+				bottom: 10px;
+				left: 10px;
+				right: 10px;
+				color: white;
+				text-align: center;
+				line-height: 21px
+			}
+			html,body {
+				background-color:#212429;
+			}
+			.title{
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+			}
+		</style>
+	<script>
+	
+//该函数将小数点保留至两位，不足两位的补0
+	function changeTwoDecimal_f(x)  {  
+				var f_x = parseFloat(x);  
+				if (isNaN(f_x))  
+				{  
+				return false;  
+				}  
+				var f_x = Math.round(x*100)/100;  
+				var s_x = f_x.toString();  
+				var pos_decimal = s_x.indexOf('.');  
+				if (pos_decimal < 0)  
+				{  
+				pos_decimal = s_x.length;  
+				s_x += '.';  
+				}  
+				while (s_x.length <= pos_decimal + 2)  
+				{  
+				s_x += '0';  
+				}  
+				return s_x;  
+	}  
+	var result;
+	var network = true;
+		function loadData(){
+			if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+					network = false;
+				}
+			if(network){
+				var url = getServerHost()+"/hq/getUpAndDownData.do"; 
+				var timeStamp = getTimeStamp();
+				var msgSignature = getMsgSignature(timeStamp);
+				var token = getToken();
+				alert(timeStamp);
+				alert(msgSignature);
+				mui.ajax(url,{
+					data:{
+						timestamp: timeStamp,
+						clientType: "app",
+						msg_signature: msgSignature,
+						token:token,
+						dataType:'sh',
+						orderType:'desc',
+						page:1,
+						pageSize:15
+					}, 
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data){
+						
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("请求异常");
+					}
+				});
+			}else{
+				mui.toast("当前网络不给力，请稍后再试" );
+			}
+		}
+	function test(){
+		 mui.plusReady(function(){
+		 	var url = getServerHost()+"/hq/getUpAndDownData.do"; 
+				var timeStamp = getTimeStamp();
+				var msgSignature = getMsgSignature(timeStamp);
+				var token = getToken();
+				mui.ajax(url,{
+					data:{
+						timestamp: timeStamp,
+						clientType: "app",
+						msg_signature: msgSignature,
+						token:token,
+						dataType:'sh',
+						orderType:'desc',
+						page:1,
+						pageSize:15,
+					}, 
+					dataType:'json',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data){
+						var listItem1= document.getElementById('ListItem1');
+						listItem1.innerHTML = "";
+						var list = data.data.list;
+						var htmStr = "";
+						for(var i=0;i<list.length;++i){
+							 htmStr += "<table align='center' width='100%' style='margin-left: 0px;'><tr><td width='33%' style='height:30px;font-size: 15px;color: #000000;'>"+data.data.list[i].name+"</td><td width='33%' style='font-size: 15px;color: #000000;'>7.66</td><td width='33%' style='font-size: 15px;color: #FF0000;'>+"+data.data.list[i].changepercent;
+							 htmStr += "</td></tr><tr></tr></table><div class='grayLine'></div>";
+							
+						}
+							listItem1.innerHTML = htmStr;
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("请求异常");
+					}
+				});
+		 	
+		 	var self = plus.webview.currentWebview();
+           	mui.ajax('http://10.150.0.61:8080/criomp/demoController.do?getAjax',{
+						data:{
+							code:self.gid,
+						},
+						dataType:'html',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(data){
+							data = eval("(" + data + ")");
+							document.getElementById("bigData").innerHTML= changeTwoDecimal_f(data.obj[0].zonghezhishu);
+							document.getElementById("jinkaiVal").innerHTML= changeTwoDecimal_f(data.obj[0].jinkai);
+							document.getElementById("zuoshouVal").innerHTML= changeTwoDecimal_f(data.obj[0].zuoshou);
+							document.getElementById("zuigaoVal").innerHTML= changeTwoDecimal_f(data.obj[0].zuigao);
+							document.getElementById("zuidiVal").innerHTML= changeTwoDecimal_f(data.obj[0].zuidi);
+							var chengjiao =data.obj[0].chengjiaoliang;
+							if(chengjiao>100000000){
+								chengjiao = chengjiao/100000000;
+								chengjiao = changeTwoDecimal_f(chengjiao);
+								var chengjiaoStr =""+ chengjiao.toString()+"亿";
+								document.getElementById("chengjiaoVal").innerHTML=  chengjiaoStr;
+							}else{
+								if(chengjiao>10000){
+								chengjiao = chengjiao/10000;
+								chengjiao = changeTwoDecimal_f(chengjiao);
+								var chengjiaoStr =""+ chengjiao.toString()+"万";
+								document.getElementById("chengjiaoVal").innerHTML=  chengjiaoStr;
+								}else{
+									chengjiao = changeTwoDecimal_f(chengjiao);
+									var chengjiaoStr =""+ chengjiao.toString();
+								document.getElementById("chengjiaoVal").innerHTML=  chengjiaoStr;
+								}
+							}
+							 var t1= changeTwoDecimal_f(parseFloat(data.obj[0].zonghezhishu));
+							 var t2 = changeTwoDecimal_f(parseFloat(data.obj[0].zuoshou));
+							 var t3 = changeTwoDecimal_f(t1-t2);
+							 var t4 = changeTwoDecimal_f((t3/t2)*100);
+							var increase = t3;
+							var increPer = t4;
+							if(increase<0){
+							document.getElementById("increase1").style.color="#FF0000";
+							document.getElementById("increase2").style.color="#FF0000"
+							}else{
+								document.getElementById("increase1").style.color="green";
+								document.getElementById("increase2").style.color="green"
+							}
+							document.getElementById("increase1").innerHTML= changeTwoDecimal_f(increase);
+							document.getElementById("increase2").innerHTML= increPer+"%";
+//							document.getElementById("image1").src= data.result[0].gopicture.minurl;
+							//document.getElementById("image1").data-preview-src= data.result[0].gopicture.minurl;
+							//document.getElementById("image2").src= data.result[0].gopicture.dayurl;
+						},
+						error:function(xhr,type,errorThrown){
+							console.log(type);
+						}
+					});
+        });
+	}
+	</script>
+	</head>
+	<body onload="test()">
+<nav id="footerBar" class="mui-bar mui-bar-tab" style="background-color: #000000;">
+	<a class="mui-tab-item mui-active" href="">
+				<span class="mui-icon mui-icon-chat" style="color: #FFFFFF;font-size: 18px;"  id="goComment">&nbsp;评论</span>
+			</a>
+			<a class="mui-tab-item" href="#tabbar-with-chat">
+				<span class="mui-icon mui-icon-plus" style="color: #FFFFFF;font-size: 18px;"  id="zixuan">&nbsp;自选</span>
+			</a>
+</nav>
+		<div class="mui-content">
+		<div class="main">
+					<div class="detail" id="detail">
+								上证指数(000001)<br />
+								交易中03-04  14:25
+						</div>
+					<div class="whiteLine"></div>
+					<div class="content1">
+						<div class="data">					
+							<div class="moreData">
+								<table align="center">
+									<tr>
+										<td>
+												<table>
+												<tr><div id="jinkai" clss="detail1"><p class="myFont">今开</p></div></tr>
+												<tr clss="detail1"><p id="jinkaiVal" class="myFont">----</p></tr>
+												</table>
+										</td>
+										<td><div id="separate" clss="separate"><img src="../../images/separate.png"/></div></td>
+										<td>
+												<table>
+												<tr><div id="zuoshou" clss="detail1"><p class="myFont">昨收</p></div></tr>
+												<tr clss="detail1"><p id="zuoshouVal" class="myFont">----</p></tr>
+												</table>
+										</td>
+										 <td><div id="separate" clss="separate"><img src="../../images/separate.png"/></div></td>
+										 <td>
+										 	<table>
+												<tr><div id="zuigao" clss="detail1"><p class="myFont">最高</p></div></tr>
+												<tr clss="detail1"><p id="zuigaoVal" class="myFont">----</p></tr>
+												</table>
+										 </td>
+										 <td><div id="separate" clss="separate"><img src="../../images/separate.png"/></div></td>
+										 <td>
+										 	<table>
+												<tr><div id="zuidi" clss="detail1"><p class="myFont">最低</p></div></tr>
+												<tr clss="detail1"><p class="myFont" id="zuidiVal">----</p></tr>
+												</table>
+										 </td>
+										 <td><div id="separate" clss="separate"><img src="../../images/separate.png"/></div></td>
+										 <td>
+										 	<table>
+												<tr><div id="chengjiaoliang" clss="detail1"><p class="myFont">成交量</p></div></tr>
+												<tr clss="detail1"><p id="chengjiaoVal" class="myFont">----</p></tr>
+												</table>
+										 </td>
+									</tr>
+								</table>				 
+							</div>
+							<div class="tuijian">
+								<p>近期----人推荐</p>
+							</div>
+							<div class="bigData">
+								<table align="center">
+									<tr>
+										<td><p id="bigData" class="bd"></p></td>
+										<td>
+												<div id="increase1" class="increase"></div>
+												<div class="br">&nbsp;</div>
+												<div  type="label"  id="increase2" class="increase"></div>				
+											</td>
+									</tr>
+								</table>						
+							</div>
+						</div>
+						<div class="data2">
+						</div>
+					</div>
+					<div class="content2">
+					<div id="slider" class="mui-slider">
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<a class="mui-control-item" href="#item1" style="color: #A6A6A6;font-size: 12px;">
+					分时	
+			</a>
+					<a class="mui-control-item" href="#item2" style="color: #A6A6A6;font-size: 12px;">
+					日K
+			</a>
+				</div>
+					</div>
+				</div>
+				<div id="item1" class="mui-slider-item mui-control-content mui-active"  style="background-color: #FFFFFF;margin-left: auto;margin-right: auto;text-align: center;">
+					<div class="redLine1"></div>
+					<div class="grayLine"></div>
+						<!--<img id="image1"  class="image" data-preview-src="" data-preview-group="1" />-->
+						<div id="myCharts1" style="width: 100%;height: 200px;"></div>
+				</div>
+			<div id="item2" class="mui-slider-item mui-control-content" style="background-color: #FFFFFF;margin-left: auto;margin-right: auto;text-align: center;">
+				<div class="redLine2"></div>
+				<div class="grayLine"></div>
+					<!--	<img id="image2"  class="image" data-preview-src="" data-preview-group="1" />-->
+						<div style="width: auto;height: 200px;">
+							<div id="myCharts" style="width: 300%;height: 200px;"></div>
+						</div>
+					</div>
+				<div class="listTitle" style="background-color: #212429;">
+							<div id="slider" class="mui-slider">
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted" style="background-color: 212429;">
+					<a class="mui-control-item" href="#ListItem1" style="color: #FFFFFF;font-size: 12px;">
+					涨幅榜	
+			</a>
+					<a class="mui-control-item" href="#ListItem2" style="color: #FFFFFF;font-size: 12px;">
+					跌幅榜
+			</a>
+			<a class="mui-control-item" href="#ListItem1" style="color: #FFFFFF;font-size: 12px;">
+					换手率
+			</a>
+				</div>
+				<div style="margin-top: -10px;background-color: #E8E8E8;">
+					<table align="center" width="100%" style="margin-left: 45px;">
+						<tr>
+							<td width="33%" style="font-size: 10px;color: #A6A6A6;">证券/代码</td>
+							<td width="33%" style="font-size: 10px;color: #A6A6A6;">当前价</td>
+							<td width="33%" style="font-size: 10px;color: #A6A6A6;">跌涨幅</td>
+						</tr>
+					</table>
+					<div class="grayLine"></div>
+				</div>
+				<div id="ListItem1" class="mui-slider-item mui-control-content mui-active"  style="background-color: #FFFFFF;margin-left: auto;margin-right: auto;text-align: center;">
+					
+						<table align="center" width="100%" style="margin-left: 0px;">
+						<tr>
+							<td width="33%" style="height:30px;font-size: 15px;color: #000000;">盐田港</td>
+							<td width="33%" style="font-size: 15px;color: #000000;">7.66</td>
+							<td width="33%" style="font-size: 15px;color: #FF0000;">+10.06%</td>
+						</tr>
+						</table>
+					
+						<table align="center" width="100%" style="margin-left: 0px;">
+						<tr>
+							<td width="33%" style="height:30px;font-size: 15px;color: #000000;">盐田港</td>
+							<td width="33%" style="font-size: 15px;color: #000000;">7.66</td>
+							<td width="33%" style="font-size: 15px;color: #FF0000;">+10.06%</td>
+						</tr>
+					</table>
+					<table align="center" width="100%" style="margin-left: 0px;">
+						<tr>
+							<td width="33%" style="height:30px;font-size: 15px;color: #000000;">盐田港</td>
+							<td width="33%" style="font-size: 15px;color: #000000;">7.66</td>
+							<td width="33%" style="font-size: 15px;color: #FF0000;">+10.06%</td>
+						</tr>
+					</table>
+	
+				</div>
+					</div>
+				</div>
+			</div>			
+			</div>
+			
+	</body>
+<script type="text/javascript" src="../../js/mui.min.js" ></script>
+<script src="../../js/mui.zoom.js"></script>
+<script src="../../js/mui.previewimage.js"></script>
+<script src="../../libs/echarts-all.js"></script>
+<script type="text/javascript" src="../../js/esl.js" ></script>
+<script type="text/javascript" src="../../js/zrender.js" ></script>
+<script type="text/javascript" src="../../js/md5.js" ></script>
+<script>
+			mui.init({
+			swipeBack:false //启用右滑关闭功能
+		});
+		mui.previewImage();
+		document.getElementById('goComment').addEventListener('tap',function(){
+		mui.openWindow({
+							url: 'tab-webview-subpage-details.html', 
+							id: 'detail',
+							extras:{
+        					gid:'sh000001',
+    					},
+							preload: true,
+							show: {
+								aniShow: 'pop-in'
+							},
+							styles: {
+								popGesture: 'hide'
+							},
+							waiting: {
+								autoShow: false
+							}
+						});
+	});
+	
+	document.getElementById('zixuan').addEventListener('tap',function(){
+		mui.openWindow({
+							url: 'tab-webview-subpage-zixuan.html', 
+							id: 'zixuan',
+							extras:{
+        					gid:'sh000001',
+    					},
+							preload: true,
+							show: {
+								aniShow: 'pop-in'
+							},
+							styles: {
+								popGesture: 'hide'
+							},
+							waiting: {
+								autoShow: false
+							}
+						});
+	});
+	
+		var option = {
+    
+    tooltip : {
+        trigger: 'axis',
+        formatter: function (params) {
+            var res = params[0].seriesName + ' ' + params[0].name;
+            res += '<br/>  开盘 : ' + params[0].value[0] + '  最高 : ' + params[0].value[3];
+            res += '<br/>  收盘 : ' + params[0].value[1] + '  最低 : ' + params[0].value[2];
+            return res;
+        }
+    },
+    toolbox: {
+        show : false,
+        feature : {
+            mark : {show: true},
+            dataZoom : {show: true},
+            dataView : {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar']},
+            restore : {show: true},
+            saveAsImage : {show: true}
+        }
+    },
+    grid : {
+    	x:50,
+    	y:10,
+    	x2:0,
+    	y2:50
+    },
+    dataZoom : {
+    	type:'inside',
+    	y:180,
+        show : true,
+        realtime: true,
+        height: 5,
+    },
+    xAxis : [
+        {
+            type : 'category',
+            boundaryGap : true,
+            axisTick: {onGap:false},
+            
+            splitLine: {show:false},
+            data : [
+                "2013/1/24", "2013/1/25", "2013/1/28", "2013/1/29", "2013/1/30",
+                "2013/1/31", "2013/2/1", "2013/2/4", "2013/2/5", "2013/2/6", 
+                "2013/2/7", "2013/2/8", "2013/2/18", "2013/2/19", "2013/2/20", 
+                "2013/2/21", "2013/2/22", "2013/2/25", "2013/2/26", "2013/2/27", 
+                "2013/2/28", "2013/3/1", "2013/3/4", "2013/3/5", "2013/3/6", 
+                "2013/3/7", "2013/3/8", "2013/3/11", "2013/3/12", "2013/3/13", 
+                "2013/3/14", "2013/3/15", "2013/3/18", "2013/3/19", "2013/3/20", 
+                "2013/3/21", "2013/3/22", "2013/3/25", "2013/3/26", "2013/3/27", 
+                "2013/3/28", "2013/3/29", "2013/4/1", "2013/4/2", "2013/4/3", 
+                "2013/4/8", "2013/4/9", "2013/4/10", "2013/4/11", "2013/4/12", 
+                "2013/4/15", "2013/4/16", "2013/4/17", "2013/4/18", "2013/4/19", 
+                "2013/4/22", "2013/4/23", "2013/4/24", "2013/4/25", "2013/4/26", 
+                "2013/5/2", "2013/5/3", "2013/5/6", "2013/5/7", "2013/5/8", 
+                "2013/5/9", "2013/5/10", "2013/5/13", "2013/5/14", "2013/5/15", 
+                "2013/5/16", "2013/5/17", "2013/5/20", "2013/5/21", "2013/5/22", 
+                "2013/5/23", "2013/5/24", "2013/5/27", "2013/5/28", "2013/5/29", 
+                "2013/5/30", "2013/5/31", "2013/6/3", "2013/6/4", "2013/6/5", 
+                "2013/6/6", "2013/6/7", "2013/6/13"
+            ]
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+            scale:true,
+            boundaryGap: [0.01, 0.01]
+        }
+    ],
+    series : [
+        {
+            name:'上证指数',
+            type:'k',
+            data:[ // 开盘，收盘，最低，最高
+                [2320.26,2302.6,2287.3,2362.94],
+                [2300,2291.3,2288.26,2308.38],
+                [2295.35,2346.5,2295.35,2346.92],
+                [2347.22,2358.98,2337.35,2363.8],
+                [2360.75,2382.48,2347.89,2383.76],
+                [2383.43,2385.42,2371.23,2391.82],
+                [2377.41,2419.02,2369.57,2421.15],
+                [2425.92,2428.15,2417.58,2440.38],
+                [2411,2433.13,2403.3,2437.42],
+                [2432.68,2434.48,2427.7,2441.73],
+                [2430.69,2418.53,2394.22,2433.89],
+                [2416.62,2432.4,2414.4,2443.03],
+                [2441.91,2421.56,2415.43,2444.8],
+                [2420.26,2382.91,2373.53,2427.07],
+                [2383.49,2397.18,2370.61,2397.94],
+                [2378.82,2325.95,2309.17,2378.82],
+                [2322.94,2314.16,2308.76,2330.88],
+                [2320.62,2325.82,2315.01,2338.78],
+                [2313.74,2293.34,2289.89,2340.71],
+                [2297.77,2313.22,2292.03,2324.63],
+                [2322.32,2365.59,2308.92,2366.16],
+                [2364.54,2359.51,2330.86,2369.65],
+                [2332.08,2273.4,2259.25,2333.54],
+                [2274.81,2326.31,2270.1,2328.14],
+                [2333.61,2347.18,2321.6,2351.44],
+                [2340.44,2324.29,2304.27,2352.02],
+                [2326.42,2318.61,2314.59,2333.67],
+                [2314.68,2310.59,2296.58,2320.96],
+                [2309.16,2286.6,2264.83,2333.29],
+                [2282.17,2263.97,2253.25,2286.33],
+                [2255.77,2270.28,2253.31,2276.22],
+                [2269.31,2278.4,2250,2312.08],
+                [2267.29,2240.02,2239.21,2276.05],
+                [2244.26,2257.43,2232.02,2261.31],
+                [2257.74,2317.37,2257.42,2317.86],
+                [2318.21,2324.24,2311.6,2330.81],
+                [2321.4,2328.28,2314.97,2332],
+                [2334.74,2326.72,2319.91,2344.89],
+                [2318.58,2297.67,2281.12,2319.99],
+                [2299.38,2301.26,2289,2323.48],
+                [2273.55,2236.3,2232.91,2273.55],
+                [2238.49,2236.62,2228.81,2246.87],
+                [2229.46,2234.4,2227.31,2243.95],
+                [2234.9,2227.74,2220.44,2253.42],
+                [2232.69,2225.29,2217.25,2241.34],
+                [2196.24,2211.59,2180.67,2212.59],
+                [2215.47,2225.77,2215.47,2234.73],
+                [2224.93,2226.13,2212.56,2233.04],
+                [2236.98,2219.55,2217.26,2242.48],
+                [2218.09,2206.78,2204.44,2226.26],
+                [2199.91,2181.94,2177.39,2204.99],
+                [2169.63,2194.85,2165.78,2196.43],
+                [2195.03,2193.8,2178.47,2197.51],
+                [2181.82,2197.6,2175.44,2206.03],
+                [2201.12,2244.64,2200.58,2250.11],
+                [2236.4,2242.17,2232.26,2245.12],
+                [2242.62,2184.54,2182.81,2242.62],
+                [2187.35,2218.32,2184.11,2226.12],
+                [2213.19,2199.31,2191.85,2224.63],
+                [2203.89,2177.91,2173.86,2210.58],
+                [2170.78,2174.12,2161.14,2179.65],
+                [2179.05,2205.5,2179.05,2222.81],
+                [2212.5,2231.17,2212.5,2236.07],
+                [2227.86,2235.57,2219.44,2240.26],
+                [2242.39,2246.3,2235.42,2255.21],
+                [2246.96,2232.97,2221.38,2247.86],
+                [2228.82,2246.83,2225.81,2247.67],
+                [2247.68,2241.92,2231.36,2250.85],
+                [2238.9,2217.01,2205.87,2239.93],
+                [2217.09,2224.8,2213.58,2225.19],
+                [2221.34,2251.81,2210.77,2252.87],
+                [2249.81,2282.87,2248.41,2288.09],
+                [2286.33,2299.99,2281.9,2309.39],
+                [2297.11,2305.11,2290.12,2305.3],
+                [2303.75,2302.4,2292.43,2314.18],
+                [2293.81,2275.67,2274.1,2304.95],
+                [2281.45,2288.53,2270.25,2292.59],
+                [2286.66,2293.08,2283.94,2301.7],
+                [2293.4,2321.32,2281.47,2322.1],
+                [2323.54,2324.02,2321.17,2334.33],
+                [2316.25,2317.75,2310.49,2325.72],
+                [2320.74,2300.59,2299.37,2325.53],
+                [2300.21,2299.25,2294.11,2313.43],
+                [2297.1,2272.42,2264.76,2297.1],		
+                [2270.71,2270.93,2260.87,2276.86],
+                [2264.43,2242.11,2240.07,2266.69],
+                [2242.26,2210.9,2205.07,2250.63],
+                [2190.1,2148.35,2126.22,2190.1]
+            ]
+        }
+    ]
+};
+ var myChart = echarts.init(document.getElementById('myCharts')); 
+  myChart.setOption(option); 
+  
+                
+                
+    
+</script>
+</html>
