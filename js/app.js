@@ -32,7 +32,7 @@
 	owner.createState = function(name, callback) {
 		var state = owner.getState();
 		state.account = name;
-		state.token = "token123456789";
+		state.token = "";
 		owner.setState(state);
 		return callback();
 	};
@@ -124,7 +124,6 @@
 			var packageName = {
 				"qq": "com.tencent.mobileqq",
 				"weixin": "com.tencent.mm",
-				"sinaweibo": "com.sina.weibo"
 			}
 			try {
 				return packageManager.getPackageInfo(packageName[id], PackageManager.GET_ACTIVITIES);
@@ -137,9 +136,9 @@
 				case "weixin":
 					var WXApi = plus.ios.import("WXApi");
 					return WXApi.isWXAppInstalled()
-				case "sinaweibo":
-					var SinaAPI = plus.ios.import("WeiboSDK");
-					return SinaAPI.isWeiboAppInstalled()
+//				case "sinaweibo":
+//					var SinaAPI = plus.ios.import("WeiboSDK");
+//					return SinaAPI.isWeiboAppInstalled()
 				default:
 					break;
 			}

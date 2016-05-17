@@ -141,11 +141,11 @@
 		<script src="../../js/mui.min.js"></script>
 		<script src="../../js/mui.enterfocus.js"></script>
 		<script src="../../js/app.js"></script>
-		<script src="../../js/ajax.js"></script>
+		<script src="../../js/md5.js"></script>
 		<script>
 			(function($, doc) {
 				$.init({
-					statusBarBackground:  '#e54c4c'
+//					statusBarBackground:  '#e54c4c'
 				});
 				$.plusReady(function() {
 					plus.screen.lockOrientation("portrait-primary");
@@ -211,15 +211,35 @@
 								var auth = auths[this.authId];
 								var waiting = plus.nativeUI.showWaiting();
 								auth.login(function() {
-									waiting.close();
-									plus.nativeUI.toast("登录认证成功");
+									
+									plus.nativeUI.toast("认证成功");
 									auth.getUserInfo(function() {
 										plus.nativeUI.toast("获取用户信息成功");
-										var name = auth.userInfo.nickname || auth.userInfo.name;
-										console.log("登录成功:"+name+";auth.accessToken="+auth.userInfo.accessToken+";access_token="+auth.userInfo.access_token);
+//										var name = auth.userInfo.nickname || auth.userInfo.name;
+										console.log(auth+"认证登录成功:"+JSON.stringify(auth));
+										if("weixin"===auth){
+											var user_wechant={
+											openid:auth.userInfo.openid,
+											nickname:auth.userInfo.nickname,
+											sex:auth.userInfo.sex,
+											headimgurl:auth.userInfo.headimgurl,
+											type:'add',
+											token:null}
+											ajax_login_wechat(user_wechant);
+										}else{
+											var user_qq={
+											openid:auth.userInfo.openid,
+											nickname:auth.userInfo.nickname,
+											gender:auth.userInfo.gender,
+											figureurl:auth.userInfo.figureurl,
+											type:'add',
+											token:null}
+											ajax_login_qq(user_qq);
+										}
 										app.createState(name, function() {
 											toMain();
-										});
+										}
+										);
 									}, function(e) {
 										plus.nativeUI.toast("获取用户信息失败：" + e.message);
 									});
@@ -227,6 +247,7 @@
 									waiting.close();
 									plus.nativeUI.toast("登录认证失败：" + e.message);
 								});
+								waiting.close();
 							});
 						}, function(e) {
 							oauthArea.style.display = 'none';
@@ -260,20 +281,18 @@
 						}
 						
 						var loginInfo = {
-							account: accountBox.value,
-							password: passwordBox.value
+							phoneNo: accountBox.value,
+							password: hex_md5(passwordBox.value),
+							position:'user'
 						};
-						console.log("点击登录");
-						// TODO
-//						app.login(loginInfo, function(err) {
-//							if (err) {
-//								plus.nativeUI.toast(err);
-//								return;
-//							}
-//							toMain();
-//						});
-						//登录
-						ajax_login(loginInfo);
+						//用户登陆
+						if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+								ToastMsg("没有网络，请连接网络再试！");
+						}else{
+							var logining = plus.nativeUI.showWaiting();
+							ajax_login(loginInfo);
+							logining.close();
+						}
 						
 					});
 					$.enterfocus('#login-form input', function() {
@@ -324,39 +343,77 @@
 						oauthArea.style.display = document.body.clientHeight > 400 ? 'block' : 'none';
 					}, false);
 					//
-//					var backButtonPress = 0;
-//					$.back = function(event) {
-//						backButtonPress++;
-//						if (backButtonPress > 1) {
-//							plus.runtime.quit();
-//						} else {
-//							plus.nativeUI.toast('再按一次退出应用');
-//						}
-//						setTimeout(function() {
-//							backButtonPress = 0;
-//						}, 1000);
-//						return false;
-//					};
 				});
+				
 			}(mui, document));
-			function loginSuccess(data){
-				console.log("登录成功");
-			//将用户信息和account分开存放是有好处的
-			if ('000000' == data.code) {
-				console.log("登录成功YSE");
+			
+			
+		function loginSuccess(data){
+			if( '100200'==data.errcode){
+				logV("登录成功");
+				ToastMsg(data.errmsg);
 				var user = {
-					website_name:data.website_name,
-					website_logo:data.website_logo,
-					website_grade:data.website_grade,
-					website_id:data.website_id
+					token:data.data.token
 				}
-				//将两个数据存放起来，第一个是等出之后删除，第二个只要登录之后就会记录保存
-				localStorage.setItem('user',JSON.stringify(user));//最好是josn字符串
-				//sessionStorage.setItem('user',JSON.stringify(user));//（页面和标签：之间不共享数据）会话结束后删除
-				localStorage.setItem('account',data.account);
-				mui.back();
-				mui.toast('登录成功');
+				//保存用户信息
+				JSON.Object('user');
+				localStorage.setItem('token',data.data.token);
+				console.log("token:"+data.data.token);
+				
+			}else if('100302'==data.errcode){//过期
+				ToastMsg(data.errmsg);
+			}else{
+				ToastMsg(data.errmsg);
 			}
+		}
+		//weixin
+		function loginWechatSuccess	(data){
+			if( '100200'==data.errcode){
+				logV("登录成功");
+				ToastMsg(data.errmsg);
+				var user = {
+					token:data.data.token
+				}
+				//保存用户信息
+				JSON.Object('user');
+				localStorage.setItem('token',data.data.token);
+				console.log("token:"+data.data.token);
+				
+			}else if('100302'==data.errcode){
+				ToastMsg(data.errmsg);
+			}else{
+				ToastMsg(data.errmsg);
+			}
+		}
+		//qq
+		function loginQQSuccess	(data){
+			if( '100200'==data.errcode){
+				logV("登录成功");
+				ToastMsg(data.errmsg);
+				var user = {
+					token:data.data.token
+				}
+				//保存用户信息
+				localStorage.setItem('token',data.data.token);
+				console.log("token:"+data.data.token);
+				
+			}else if('100302'==data.errcode){
+				ToastMsg(data.errmsg);
+			}else{
+				ToastMsg(data.errmsg);
+			}
+		}
+		function loginError(type,errorThrown){
+				
+			ToastMsg(type+";"+errorThrown);
+		}
+		function loginWechatError(type,errorThrown){
+				
+			ToastMsg(type+";"+errorThrown);
+		}
+		function loginQQError(type,errorThrown){
+				
+			ToastMsg(type+";"+errorThrown);
 		}
 		</script>
 	</body>

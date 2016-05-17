@@ -32,9 +32,145 @@ function str_hmac_md5(key, data) { return binl2str(core_hmac_md5(key, data)); }
 function getTimeStamp(){return Math.round(new Date().getTime()/1000);}
 function getAppId(){return "jinqianzhuang";}
 function getMsgSignature(timpstamp){var appid = getAppId();return hex_md5(timpstamp+appid);}
-function getServerHost(){return "http://192.168.1.116:80/platform-server";}
-function getImageHost(){return "http://192.168.1.116:8080/jqz/image/";}
+function getServerHost(){return "http://101.201.106.4/platform-server";}
+function getImageHost(){return "http://101.201.106.4:8080/jqz/image/";}
 function getToken(){return "ksOvnsAjc36EXpC4AaZZ1462610082958";}
+
+/*
+ *参数、输出、吐司
+ */
+	var debug_log = true ;
+	var timeout =15000;
+	//获取发送数据的
+	 function getdata(options){
+		var timestamp = getTimeStamp();
+		var sign = getMsgSignature(timestamp);
+		var data = {
+			clientType:'app',
+			timestamp:timestamp,
+			msg_signature:sign,
+		};
+		for (var key in options) {
+			data[key] = options[key];
+		}
+		return data;
+	}
+	//控制台打印信息 
+	function logV(info){
+		if(debug_log){
+			console.log("ajax:"+info);
+		}
+	}
+	//控制台打印信息 
+	function logData(data){
+		if(debug_log){
+			console.log("request:"+JSON.stringify(data));
+		}
+	}
+	//控制台打印信息 
+	function logDataResponse(data){
+		if(debug_log){
+			console.log("Response:"+JSON.stringify(data));
+		}
+	}
+	 //请求网络返回信息
+	function ToastMsg(msg){
+		mui.toast(msg);
+	}
+
+(function(w){
+//手机号注册
+	w.ajax_register = function(options){
+		var data = getdata(options);
+		var regster_url=getServerHost()+"host/user/addUserByPhone.do";
+		logV(regster_url);
+		logData(data);
+		mui.ajax(regster_url,{
+			data:data,
+			dataType:'json',//服务器返回json格式数据
+			type:'post',//HTTP请求类型
+			timeout:timeout,//超时时间设置为15秒；
+			success:function(data){
+				logDataResponse(data);
+				registerSeccess(data);
+			},
+			error:function(xhr,type,errorThrown){
+				console.log("用户注册失败:type="+type+";errorThrown="+errorThrown.toString());
+			}
+		});
+	}
+	
+	
+	//用户登陆
+	w.ajax_login = function(options){
+		var data = getdata(options);
+		var login_url=getServerHost()+"/user/loginUser.do";
+		logV(login_url);
+		logData(data);
+		mui.ajax(login_url,
+		{
+			data:data,
+			dataType:'json',//服务器返回json格式数据
+			type:'post',//HTTP请求类型
+			timeout:timeout,//超时时间设置为15秒；
+			success:function(data){
+				logDataResponse(data);
+				loginSuccess(data);
+			},
+			error:function(xhr,type,errorThrown){
+				loginError(type,errorThrown);
+				console.log("登录失败:type="+type+";errorThrown="+errorThrown.toString());
+				
+			}
+		});
+	}
+	//微信认证登录
+	w.ajax_login_wechat = function(options){
+		var data = getdata(options);
+		var login_url=getServerHost()+"host/user/addUserWXInfo.do";
+		logV(login_url);
+		logData(data);
+		mui.ajax(login_url,
+		{
+			data:data,
+			dataType:'json',//服务器返回json格式数据
+			type:'post',//HTTP请求类型
+			timeout:timeout,//超时时间设置为15秒；
+			success:function(data){
+				logDataResponse(data);
+				loginWechatSuccess(data);
+			},
+			error:function(xhr,type,errorThrown){
+				loginWechatError(type,errorThrown);
+				console.log("微信认证失败:type="+type+";errorThrown="+errorThrown.toString());
+				
+			}
+		});
+	}
+	//QQ认证登录
+	w.ajax_login_qq = function(options){
+		var data = getdata(options);
+		var login_url=getServerHost()+"host/use/addQQInfo.do";
+		logV(login_url);
+		logData(data);
+		mui.ajax(login_url,
+		{
+			data:data,
+			dataType:'json',//服务器返回json格式数据
+			type:'post',//HTTP请求类型
+			timeout:timeout,//超时时间设置为15秒；
+			success:function(data){
+				logDataResponse(data);
+				loginQQSuccess(data);
+			},
+			error:function(xhr,type,errorThrown){
+				loginQQError(type,errorThrown);
+				console.log("QQ认证失败:type="+type+";errorThrown="+errorThrown.toString());
+				
+			}
+		});
+	}
+})(window);
 
 /*
  * Perform a simple self-test to see if the VM is working
