@@ -1,0 +1,35 @@
+.quotation {
+	    			padding-top: 10px;
+	    			padding-bottom: 10px;
+	    			background-color: #000000;
+	    			background-position: center center; 
+	    			text-align: left;
+	    			font-family: "微软雅黑";
+	    			color: #FFFFFF;
+	    			background-size: 100% auto;
+	    		}
+.data{
+			background: rgb(29,33,39);
+			height: 200px;
+}
+.data2{
+			background: rgb(29,33,39);
+			height: 200px;
+			padding-bottom:10%
+}
+
+.white{
+		color: #FFFFFF;
+		font-family: "微软雅黑";
+		margin-left: 15px;
+		height: 10px;
+}
+.red{
+		font-family: "微软雅黑";
+		margin-left: 15px;
+		height: 10px;
+}
+.whiteLine{
+		height: 1px;
+		background-color: #FFFFFF;	
+}
