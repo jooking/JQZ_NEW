@@ -1,22 +1,35 @@
 /**
  *  “本地存储” ｛ name:xxx,token:xxxxx,headimgurl:xxx｝
  **/
-//创建用户状态：
+////存储和获取用户账号
 function saveNameState(name) {
 		var state = getState();
 		state.name = name;
 		setState(state);
 }
+function getNameState(){
+	var state=getState();
+	return state.name;
+}
+//存储和获取用户token
 function saveTokenState(token) {
 		var state = getState();
 		state.token = token;
 		setState(state);
 }
-
+function getTokenState(){
+	var state=getState();
+	return state.token;
+}
+//存储和获取头像链接
 function saveHeadimgurlState(headimgurl) {
 		var state = getState();
 		state.headimgurl = headimgurl;
 		setState(state);
+}
+function getHeadimgurlState(){
+	var state=getState();
+	return state.Headimgurl;
 }
 /**
 	 * 获取当前状态
@@ -33,7 +46,7 @@ function setState(state) {
 		localStorage.setItem('$state', JSON.stringify(state));
 }
 
-
+//=====================下面暂时无用
 (function($, owner) {
 	/**
 	 * 用户登录
