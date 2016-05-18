@@ -82,7 +82,7 @@ function getToken(){return "ksOvnsAjc36EXpC4AaZZ1462610082958";}
 //手机号注册
 	w.ajax_register = function(options){
 		var data = getdata(options);
-		var regster_url=getServerHost()+"host/user/addUserByPhone.do";
+		var regster_url=getServerHost()+"/user/addUserByPhone.do";
 		logV(regster_url);
 		logData(data);
 		mui.ajax(regster_url,{
@@ -127,7 +127,7 @@ function getToken(){return "ksOvnsAjc36EXpC4AaZZ1462610082958";}
 	//微信认证登录
 	w.ajax_login_wechat = function(options){
 		var data = getdata(options);
-		var login_url=getServerHost()+"host/user/addUserWXInfo.do";
+		var login_url=getServerHost()+"/user/addUserWXInfo.do";
 		logV(login_url);
 		logData(data);
 		mui.ajax(login_url,
@@ -150,7 +150,7 @@ function getToken(){return "ksOvnsAjc36EXpC4AaZZ1462610082958";}
 	//QQ认证登录
 	w.ajax_login_qq = function(options){
 		var data = getdata(options);
-		var login_url=getServerHost()+"host/use/addQQInfo.do";
+		var login_url=getServerHost()+"/user/addQQInfo.do";
 		logV(login_url);
 		logData(data);
 		mui.ajax(login_url,
