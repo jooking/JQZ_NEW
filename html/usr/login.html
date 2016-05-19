@@ -208,38 +208,49 @@
 									plus.nativeUI.toast('您尚未安装微信客户端');
 									return;
 								}
+								var id = this.getAttribute("id");
+								console.log("id="+id);
 								var auth = auths[this.authId];
 								var waiting = plus.nativeUI.showWaiting();
 								auth.login(function() {
-									
 									plus.nativeUI.toast("认证成功");
 									auth.getUserInfo(function() {
 										plus.nativeUI.toast("获取用户信息成功");
 //										var name = auth.userInfo.nickname || auth.userInfo.name;
 										console.log(auth+"认证登录成功:"+JSON.stringify(auth));
-										if("weixin"===auth){
+										var state=getState();//获取本地用户信息
+										if("weixin"===auth.id){
 											var user_wechant={
 											openid:auth.userInfo.openid,
 											nickname:auth.userInfo.nickname,
 											sex:auth.userInfo.sex,
 											headimgurl:auth.userInfo.headimgurl,
-											type:'add',
-											token:null}
+											type:'add'
+											}
+											//============保存本地用户信息
+											state.name=user_wechant.nickname;
+											state.headimgurl=user_wechant.headimgurl;
+											setState(state);
+											//===========
 											ajax_login_wechat(user_wechant);
 										}else{
 											var user_qq={
-											openid:auth.userInfo.openid,
-											nickname:auth.userInfo.nickname,
-											gender:auth.userInfo.gender,
-											figureurl:auth.userInfo.figureurl,
-											type:'add',
-											token:null}
+												openid:auth.authResult.openid,
+												nickname:auth.userInfo.nickname,
+												gender:auth.userInfo.gender,
+												figureurl:auth.userInfo.figureurl,
+												type:'add'
+											}
+											//============保存本地用户信息
+											state.name=user_qq.nickname;
+											state.headimgurl=user_qq.figureurl;
+											setState(state);
+											 //=======
 											ajax_login_qq(user_qq);
 										}
-										app.createState(name, function() {
-											toMain();
-										}
-										);
+//										app.createState(name, function() {
+//											toMain();
+//										});
 									}, function(e) {
 										plus.nativeUI.toast("获取用户信息失败：" + e.message);
 									});
@@ -352,13 +363,9 @@
 			if( '100200'==data.errcode){
 				logV("登录成功");
 				ToastMsg(data.errmsg);
-				var user = {
-					token:data.data.token
-				}
 				//保存用户信息
-				JSON.Object('user');
-				localStorage.setItem('token',data.data.token);
-				console.log("token:"+data.data.token);
+				saveTokenState(data.data.token);
+				console.log("save TOKEN="+JSON.stringify(getState()));
 				
 			}else if('100302'==data.errcode){//过期
 				ToastMsg(data.errmsg);
@@ -371,13 +378,10 @@
 			if( '100200'==data.errcode){
 				logV("登录成功");
 				ToastMsg(data.errmsg);
-				var user = {
-					token:data.data.token
-				}
 				//保存用户信息
-				JSON.Object('user');
-				localStorage.setItem('token',data.data.token);
-				console.log("token:"+data.data.token);
+//				localStorage.setItem('token',data.data.token);
+				saveTokenState(data.data.token);
+				console.log("save TOKEN="+JSON.stringify(getState()));
 				
 			}else if('100302'==data.errcode){
 				ToastMsg(data.errmsg);
@@ -390,12 +394,9 @@
 			if( '100200'==data.errcode){
 				logV("登录成功");
 				ToastMsg(data.errmsg);
-				var user = {
-					token:data.data.token
-				}
 				//保存用户信息
-				localStorage.setItem('token',data.data.token);
-				console.log("token:"+data.data.token);
+				saveTokenState(data.data.token);
+				console.log("save TOKEN="+JSON.stringify(getState()));
 				
 			}else if('100302'==data.errcode){
 				ToastMsg(data.errmsg);
