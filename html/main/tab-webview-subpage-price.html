@@ -13,219 +13,215 @@
 		<link rel="stylesheet" href="../../css/quotation.css">
 		<style>
 			html,body {
-				background-color: rgb(29,33,39);
+				background-color: #333333;
 			}
 			.title{
 				margin: 20px 15px 10px;
 				color: #6d6d72;
 				font-size: 15px;
 			}
+			#header-title {color: #fff;font-size: 15px;}
+			.whiteText{overflow:hidden;font-size:20px;line-height:20px;display:block;width:100%;height:20px;margin-top:8px;text-overflow:ellipsis;color: white;}
+			.greenText{overflow:hidden;font-size:20px;line-height:20px;display:block;width:100%;height:20px;margin-top:8px;color: green;}
+			.redText{overflow:hidden;font-size:20px;line-height:20px;display:block;width:100%;height:20px;margin-top:8px;color: red;}
+			.minText{overflow:hidden;font-size:12px;line-height:12px;display:block;width:100%;height:12px;margin-top:8px;color: #AAAAAA;}
 		</style>
-	<script>
-	//该函数将小数点保留至两位，不足两位的补0
-	function changeTwoDecimal_f(x)  {  
-				var f_x = parseFloat(x);  
-				if (isNaN(f_x))  
-				{  
-				return false;  
-				}  
-				var f_x = Math.round(x*100)/100;  
-				var s_x = f_x.toString();  
-				var pos_decimal = s_x.indexOf('.');  
-				if (pos_decimal < 0)  
-				{  
-				pos_decimal = s_x.length;  
-				s_x += '.';  
-				}  
-				while (s_x.length <= pos_decimal + 2)  
-				{  
-				s_x += '0';  
-				}  
-				return s_x;  
-	}  
-		var result = {
-"resultcode":"200",
-"reason":"SUCCESSED!",
-"result":[
-	{"data":{
-	"buyFive":"0",
-	"buyFivePri":"0",
-	"buyFour":"0",
-	"buyFourPri":"0",
-	"buyOne":"0",
-	"buyOnePri":"0",
-	"buyThree":"0",
-	"buyThreePri":"0",
-	"buyTwo":"0",
-	"buyTwoPri":"0",
-	"competitivePri":"0",
-	"date":"2016-04-26",
-	"gid":"sh000001",
-	"increPer":"0.61",
-	"increase":"18.0293",
-	"name":"上证指数",
-	"nowPri":"2964.6997",
-	"reservePri":"0",
-	"sellFive":"0",
-	"sellFivePri":"0",
-	"sellFour":"0",
-	"sellFourPri":"0",
-	"sellOne":"0",
-	"sellOnePri":"0",
-	"sellThree":"0",
-	"sellThreePri":"0",
-	"sellTwo":"0",
-	"sellTwoPri":"0",
-	"time":"15:03:58",
-	"todayMax":"2965.4291",
-	"todayMin":"2933.9707",
-	"todayStartPri":"2944.7156",
-	"traAmount":"134292458713",
-	"traNumber":"1177116",
-	"yestodEndPri":"2946.6704"},
-	"dapandata":{
-	"dot":"2964.6997",
-	"name":"上证指数",
-	"nowPic":"18.0293",
-	"rate":"0.61",
-	"traAmount":"13429246",
-	"traNumber":"1177116"},
-	"gopicture":{"minurl":"http://image.sinajs.cn/newchart/min/n/sh000001.gif","dayurl":"http://image.sinajs.cn/newchart/daily/n/sh000001.gif","weekurl":"http://image.sinajs.cn/newchart/weekly/n/sh000001.gif","monthurl":"http://image.sinajs.cn/newchart/monthly/n/sh000001.gif"}}],"error_code":0}
-		function test(){
-			var gg = {"attributes":null,"obj":[{"name":"上证指数","code":null,"chengjiaoliang":"131487344","jinkai":"2896.1623","zuoshou":"2913.2476","zuigao":"2896.1623","chengjiaoe":"138227705361","zuidi":"2842.0143"}],"msg":null,"jsonStr":"{\"obj\":[{\"chengjiaoe\":\"138227705361\",\"chengjiaoliang\":\"131487344\",\"jinkai\":\"2896.1623\",\"name\":\"上证指数\",\"zuidi\":\"2842.0143\",\"zuigao\":\"2896.1623\",\"zuoshou\":\"2913.2476\"}],\"success\":true}","success":true}		
-				getDot("sh000001","dot1","dot1detail");
-				getDot("sz399001","dot2","dot2detail")
-				//getDot("sz899001","dot3")
-				getDot("sz399006","dot4","dot4detail")
-					
-		}
-		function getDot(gid,id,detailId){
-			mui.ajax('http://10.150.0.61:8080/criomp/demoController.do?getAjax',{
-						data:{
-							code:gid,
-						},
-						dataType:'html',//服务器返回json格式数据
-						type:'post',//HTTP请求类型
-						timeout:10000,//超时时间设置为10秒；changeTwoDecimal_f
-						success:function(data){
-							 var d= eval("(" + data + ")");
-							 var t1= changeTwoDecimal_f(parseFloat(d.obj[0].zonghezhishu));
-							 var t2 = changeTwoDecimal_f(parseFloat(d.obj[0].zuoshou));
-							 var t3 = changeTwoDecimal_f(t1-t2);
-							 var t4 = changeTwoDecimal_f((t3/t2)*100);
-							
-							if(t3>0){
-								document.getElementById(id).style.color="#FF0000";
-								document.getElementById(detailId).style.color="#FF0000";
-								document.getElementById(detailId).style.fontSize="8px";
-							}else{
-								document.getElementById(id).style.color="#008000";
-								document.getElementById(detailId).style.color="green";
-								document.getElementById(detailId).style.fontSize="8px";
-							}
-							document.getElementById(id).innerHTML=t1;
-							document.getElementById(detailId).innerHTML=t3+"&nbsp;"+t4+"%";
-						},
-						error:function(xhr,type,errorThrown){
-							console.log(type);
-						}
-					});
-		}
-	</script>
 	</head>
-	<body onload="test()">
+	<body>
+		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;background-color: #1d2831">
+			<h1 class="mui-title" id="header-title">行情</h1>
+		</header>
 		<div class="mui-content">
-		<div class="main">
-						<div class="quotation" id="quotation1">
-								国内行情
-						</div>
-					<div class="whiteLine"></div>
-						<div class="data" id="data2">
-								<br />
-								<div style="float: left;padding-right: 15%;" id="click1" >
-								<p class="white" >上证指数</p>
-								<p class="red"  id="dot1"></p>
-								<p class="white" id="dot1detail">-- --</p>
-								<br />
-								</div>
-								<div style="float: left;padding-right: 15%;margin-right:15px;" id="click2">
-								<p class="white">深证指数</p>
-								<p class="red"  id="dot2"></p>
-								<p class="white" id="dot2detail">-- --</p>
-								<br />
-								</div>
-								
-								<div style="">
-								<p class="white">创业板</p>
-								<p class="red" id="dot4"></p>
-								<p class="white" id="dot4detail">-- --</p>
-								<br />
-								</div>
-						</div>
-					<div class="whiteLine"></div>
-						<div class="quotation" id="quotation2">
-								国际行情
-						</div>
-					<div class="whiteLine"></div>
-						<div class="data2" id="data2">
-								<br />
-								<p class="white">上证指数</p>
-								<p class="red">1245.96</p>
-								<p class="white">+19 +26</p>
-								<br />
-								<p class="white">上证指数</p>
-								<p class="red">1245.96</p>
-								<p class="white">+19 +26</p>
-						</div>
-				</div>
+			<div class="quotation" id="quotation1">
+				国内行情
 			</div>
+			<div class="whiteLine"></div>
+			<div>
+				<ul class="mui-table-view mui-grid-view mui-grid-9" style="background-color: #333333;border: hidden;">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4" style="background-color: #333333;border: hidden;">
+						<a href="#">
+		                    <div class="whiteText shcla">上证指数</div>
+		                    <div class="greenText shcla" id="shnow">-----</div>
+		                    <div class="minText shcla" id="shrate">----&nbsp;&nbsp;----</div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media mui-col-xs-4" style="background-color: #333333;border: hidden;">
+						<a href="#">
+		                    <div class="whiteText szcla">深证成指</div>
+		                    <div class="greenText szcla" id="sznow">-----</div>
+		                    <div class="minText szcla" id="szrate">----&nbsp;&nbsp;----</div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media mui-col-xs-4" style="background-color: #333333;border: hidden;">
+						<a href="#">
+		                    <div class="whiteText cybcla">创业板指</div>
+		                    <div class="greenText cybcla" id="cybnow">-----</div>
+		                    <div class="minText cybcla" id="cybrate">----&nbsp;&nbsp;----</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="whiteLine"></div>
+			<div class="quotation" id="quotation2">
+				国际行情
+			</div>
+			<div class="whiteLine"></div>
+			<div>
+				<ul class="mui-table-view mui-grid-view mui-grid-9" style="background-color: #333333;border: hidden;">
+					<li class="mui-table-view-cell mui-media mui-col-xs-4" style="background-color: #333333;border: hidden;">
+						<a href="#">
+		                    <div class="whiteText yycla">原油</div>
+		                    <div class="greenText yycla" id="yynow">-----</div>
+		                    <div class="minText yycla" id="yyrate">----&nbsp;&nbsp;----</div>
+						</a>
+					</li>
+					<li class="mui-table-view-cell mui-media mui-col-xs-4" style="background-color: #333333;border: hidden;">
+						<a href="#">
+		                    <div class="whiteText xhjscla" id="xhjsnow">现货金属</div>
+		                    <div class="greenText xhjscla" id="xhjsrate">-----</div>
+		                    <div class="minText xhjscla">----&nbsp;&nbsp;----</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
 	</body>
 	<script src="../../js/mui.min.js"></script>
 	<script type="text/javascript" src="../../js/md5.js" ></script>
 	<script>
+		var network = true;
 		mui.init({
 			swipeBack:false //启用右滑关闭功能
 		});
-		document.getElementById('click1').addEventListener('tap',function(){
-		mui.openWindow({
-							url: 'tab-webview-subpage-details.html', 
-							id: 'detail',
-							extras:{
-        					gid:'sh000001',
-        					dataType:'sh',
-    					},
-							preload: false,
-							show: {
-								aniShow: 'pop-in'
-							},
-							styles: {
-								popGesture: 'hide'
-							},
-							waiting: {
-								autoShow: false
-							}
-						});
-	});
-	document.getElementById('click2').addEventListener('tap',function(){
-		mui.openWindow({
-							url: 'tab-webview-subpage-details.html', 
-							id: 'detail',
-							extras:{
-        					gid:'sz399001',
-        					dataType:'sz',
-    					},
-							preload: false,
-							show: {
-								aniShow: 'pop-in'
-							},
-							styles: {
-								popGesture: 'hide'
-							},
-							waiting: {
-								autoShow: false
-							}
-						});
-	});
+		if (mui.os.plus) {
+			mui.plusReady(function() {
+				plusReady();
+			});
+		} else {
+			mui.ready(function() {
+			});
+		}
+		var juheDetailUrl = getJuheDetailUrl();
+		var juheKey = getJuheKey();
 		
+		var ws=null;
+		var hqDetailPage=null;
+		
+		function plusReady(){
+			loadSH();
+			loadSZ();
+			window.setInterval(timerRefresh, 10000);
+			ws=plus.webview.currentWebview(); 
+			hqDetailPage=mui.preload({"id": 'hqDetailPage',"url": '../hangqing/hqDetail.html'});
+		}
+		function timerRefresh(){
+			loadSH();
+			loadSZ();
+		}
+		function loadSH(){
+			if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+				network = false;
+			}
+			if(network){
+				mui.ajax(juheDetailUrl,{
+					data:{
+						type:0,
+						key:juheKey
+					}, 
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data){
+						if(data.error_code == 0){
+							var nowpri = data.result.nowpri;//当前价
+							var increase = data.result.increase;//涨跌幅
+							var increPer = data.result.increPer;//涨跌百分比
+							document.getElementById("shnow").innerText=leave2point(nowpri);
+							document.getElementById("shrate").innerHTML=leave2point(increase)+"&nbsp;&nbsp;"+leave2point(increPer);
+						}else{
+							mui.toast("请求参数不对");
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("请求异常");
+					}
+				});
+			}else{
+				mui.toast("当前网络不给力，请稍后再试" );
+			}
+		}
+		function loadSZ(){
+			if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+				network = false;
+			}
+			if(network){
+				mui.ajax(juheDetailUrl,{
+					data:{
+						type:1,
+						key:juheKey
+					}, 
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data){
+						if(data.error_code == 0){
+							var nowpri = data.result.nowpri;//当前价
+							var increase = data.result.increase;//涨跌幅
+							var increPer = data.result.increPer;//涨跌百分比
+							document.getElementById("sznow").innerText=leave2point(nowpri);
+							document.getElementById("szrate").innerHTML=leave2point(increase)+"&nbsp;&nbsp;"+leave2point(increPer);
+						}else{
+							mui.toast("请求参数不对");
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("请求异常");
+					}
+				});
+			}else{
+				mui.toast("当前网络不给力，请稍后再试" );
+			}
+		}
+		window.addEventListener('tap', function(event) {
+			var ecl = event.target.className;
+			if(ecl.indexOf('shcla') > -1){
+				openDtailPage("sh","000001");
+			}else if(ecl.indexOf('szcla') > -1){
+				openDtailPage("sz","399001");
+			}else if(ecl.indexOf('cybcla') > -1){
+				openDtailPage("cyb","399006");
+			}else if(ecl.indexOf('yycla') > -1){
+				openDtailPage("yy","CL");
+			}else if(ecl.indexOf('xhjscla') > -1){
+				openDtailPage("xhjs","000001");
+			}
+		});
+		
+		function openDtailPage(type,code){
+			if(!hqDetailPage){hqDetailPage=plus.webview.getWebviewById('hqDetailPage');}
+			mui.fire(hqDetailPage,'initDetailPage',{code:code,type:type});
+			if(mui.os.ios){
+					hqDetailPage.show("slide-in-right");
+				}else if(mui.os.android){
+					mui.openWindow({
+						id: 'hqDetailPage',
+						show: {aniShow: 'slide-in-right'},
+						styles: {popGesture: 'hide'},
+						waiting: {autoShow: false}
+					});
+				}
+		}
+		function leave2point(str){
+		if(str.indexOf('.') > -1){
+			var lenp = str.indexOf('.');
+			var len = str.length;
+			if(len - lenp > 3){
+				return str.substr(0,lenp+3);
+			}
+			return str;
+		}else{
+			return str;
+		}
+	}
 	</script>
 </html>
