@@ -1,6 +1,15 @@
 /**
  *  “本地存储” ｛ name:xxx,token:xxxxx,headimgurl:xxx｝
  **/
+//用户状态：是否登陆
+function isLogin(){
+	var flag = false;
+	if(getTokenState()){
+		flag=true;
+	}
+	return flag;
+}	
+
 ////存储和获取用户账号
 function saveNameState(name) {
 		var state = getState();
