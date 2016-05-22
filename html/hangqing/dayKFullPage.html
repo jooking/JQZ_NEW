@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="../../js/mui.min.js"></script>
+    <link href="../../css/mui.min.css" rel="stylesheet"/>
+    <script type="text/javascript" charset="UTF-8">
+      	mui.init();
+    </script>
+</head>
+<body>
+	<div class="mui-content">
+		<button id="backId2" type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+			<span class="mui-icon mui-icon-left-nav" style="color: #ECB100;" id="backId"></span>
+		</button>
+		<div id="dayKChart"></div>
+	</div>
+</body>
+<script src="../../js/mui.min.js"></script>
+<script src="../../js/echarts-all.js"></script>
+<script type="text/javascript" charset="UTF-8">
+mui.init();
+	if (mui.os.plus) {
+		mui.plusReady(function() {
+			plusReady();
+		});
+	} else {
+		mui.ready(function() {
+		});
+	}
+
+function plusReady(){
+//		mui.toast(plus.screen.resolutionHeight+" "+plus.screen.resolutionWidth+" "+plus.screen.scale);
+		var wid = (plus.screen.resolutionWidth*plus.screen.scale-135)+"px";
+		var height1 = (plus.screen.resolutionWidth*10/13 - 30)+"px";
+		var height2 = (plus.screen.resolutionWidth*3/13)+"px";
+//		document.getElementsByClassName("chart").style.height=height1;
+//		document.getElementsByClassName("chart2").style.height=height;
+		document.getElementById("dayKChart").style.height=height1;
+		document.getElementById("dayKChart").style.width=wid;
+		document.getElementById("dayKChart").style.margin=0;
+		document.getElementById("dayKChart").style.padding=0;
+	}
+	window.addEventListener('initKPage',function(event){
+		plus.screen.lockOrientation("landscape-primary");//横屏
+		//获得事件参数
+		var upTime = event.detail.time;
+		var daycnt1 = event.detail.daycnt1;
+		var daycnt2 = event.detail.daycnt2;
+		var daycnt3 = event.detail.daycnt3;
+		var daycnt4 = event.detail.daycnt4;
+		
+		var minkChart = echarts.init(byId('minKChart'));
+		minkChart.setOption(getDayKOption('line',upTime,daycnt1,daycnt2,daycnt3,daycnt4));
+				
+	});
+	var backid = document.getElementById("backId");
+	backid.addEventListener('tap',function(){
+//		plus.screen.unlockOrientation();//解除横屏
+		plus.screen.lockOrientation("portrait-primary");//竖屏
+	},false);
+	var backid2 = document.getElementById("backId2");
+	backid2.addEventListener('tap',function(){
+//		plus.screen.unlockOrientation();//解除横屏
+		plus.screen.lockOrientation("portrait-primary");//竖屏
+	},false);
+	
+	var byId = function(id) {
+		return document.getElementById(id);
+	};
+	function getDayKOption(ctype,timeData,data1,data2,data3,data4){
+//		var timeData = [];
+//		var data1 = [];
+//		var data2 = [];
+//		for (var i = 0; i < 1000; i++) {
+//			timeData.push("time"+i);
+//		    data1.push(Math.random() * 100001);
+//		    data2.push(Math.random() * 200001);
+//		}
+		var chartOption = {
+			grid: {
+					x: 30,
+					x2: 8,
+					y: 15,
+					y2: 30
+			},
+			toolbox: {
+				show: false,
+				feature: {
+					mark: {
+						show: true
+					},
+					dataView: {
+						show: true,
+						readOnly: false
+					},
+					magicType: {
+						show: true,
+						type: ['line','bar']
+					},
+					restore: {
+						show: true
+					},
+					saveAsImage: {
+						show: true
+					}
+				}
+			},
+			calculable: false,
+			xAxis: [{
+				type: 'category',
+				axisLabel: {show: true,textStyle: {color: '#000000',fontSize:8}},
+				data: timeData
+			}],
+			yAxis: [{
+				type: 'value',
+				axisLabel: {show: true,textStyle: {color: '#000000',fontSize:7}},
+				splitArea: {
+					show: true
+				}
+			}],
+			series: [{
+				type: ctype,
+				itemStyle:{
+					normal:{lineStyle:{color:'#FFCC33',width:1}}
+				},
+				data: data1
+			}, {
+				type: ctype,
+				itemStyle:{
+					normal:{lineStyle:{color:'#333333',width:1}}
+				},
+				data: data2
+			}, {
+				type: ctype,
+				itemStyle:{
+					normal:{lineStyle:{color:'#FF0000',width:1}}
+				},
+				data: data3
+			}, {
+				type: ctype,
+				itemStyle:{
+					normal:{lineStyle:{color:'#2AC845',width:1}}
+				},
+				data: data4
+			}]
+		}
+		return chartOption;
+	}
+</script>
+</html>

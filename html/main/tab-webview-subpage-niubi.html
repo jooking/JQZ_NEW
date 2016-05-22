@@ -162,7 +162,8 @@
 				var items = response.data.list;
 				mui.each(items,function(index,item){
 					var i = index+1;
-					var iurl = imgHost+item.dir+item.img_name;
+//					var iurl = imgHost+item.dir+item.img_name;
+					var iurl = item.dir+item.img_name;
 					$("#niubi_img"+i).attr("src",iurl);
 					if(index==1){
 						$("#niubi_img44").attr("src",iurl);

@@ -359,9 +359,10 @@
 				if(response.errcode == 100200){
 					var obj = response.data.obj;
 					var objid = obj.id;
-					mui.toast(objid);
 					var trg = document.getElementById("dianzan"+objid);
 					trg.innerHTML = "点赞("+obj.zan_cnt+")";
+				}else if(response.errcode == 100300){
+					mui.toast("你已经点过赞了，多次点赞无效！");
 				}else if(response.errcode == 100402){
 					mui.toast("bowen-view关键字不足!");
 				}else if(response.errcode == 100404){

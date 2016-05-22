@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>行情详情页</title>
+    <link href="../../css/mui.min.css" rel="stylesheet"/>
+    <!--App自定义的css-->
+	<link rel="stylesheet" type="text/css" href="../css/app.css" />
+    <style>
+    	#title {padding: 20px 15px 10px;color: #fff;font-size: 23px;line-height: 23px;}
+    	.minText{overflow:hidden;font-size:12px;line-height:12px;display:block;width:100%;height:12px;margin-top:8px;color: #FFFFFF;}
+    	.min2Text{overflow:hidden;font-size:14px;line-height:14px;display:block;width:100%;height:14px;margin-top:8px;color: #FFFFFF;}
+    	.LargeText{overflow:hidden;font-size:35px;line-height:35px;display:block;width:100%;height:35px;margin-top:8px;color: #FFFFFF;}
+    	.mui-col-xs-20{width: 20%;}
+    	.mui-control-content {
+			background-color: white;
+			min-height: 260px;
+		}
+		.mui-control-content .mui-loading {
+			margin-top: 50px;
+		}
+		.chart {
+			height: 200px;
+			margin: 0px;
+			padding: 0px;
+		}
+		.chart2 {
+			height: 60px;
+			margin: 0px;
+			padding: 0px;
+		}.chart3 {
+			height: 260px;
+			margin: 0px;
+			padding: 0px;
+		}
+		.updownbut{width: 48%;text-align: center;font-size: 18px;line-height: 18px;height: 25px;display:block;overflow:hidden;float: left;margin-top: 10px;color: #8F8F94;}
+		.btnselect{color: #000000;}
+		.libutclss{width: 40%;text-align: center;font-size: 18px;line-height: 18px;display:block;float: left;overflow:hidden;color: #000000;}
+    	.greenText{color: #2AC845;}
+    	.redText{color: #FF0000;}
+    </style>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav" style="padding-right: 15px;background-color: #1d2831;height: 50px;">
+		<button type="button" class="mui-left mui-action-back mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+			<span class="mui-icon mui-icon-left-nav" style="color: #FFFFFF;"></span>
+		</button>
+		<h1 class="mui-title mui-title-custom" >
+			<a href="javascript:;" id="title">详情</a>
+		</h1>
+	</header>
+	<nav id="footerBar" class="mui-bar mui-bar-tab zixuan" style="background-color: #000000;">
+		<a class="mui-tab-item" class="zixuan">
+			<span class="mui-icon mui-icon-plus zixuan" style="color: #FFFFFF;font-size: 23px;" id="zixuan">&nbsp;自选</span>
+		</a>
+	</nav>
+	<div class="mui-content" style="background-color: #1d2831;">
+		<ul class="mui-table-view mui-grid-view mui-grid-9" style="background-color: #1d2831;border: hidden;margin-top: 0;">
+			<li class="mui-table-view-cell mui-media mui-col-xs-20" style="background-color: #1d2831;border: hidden;">
+				<a href="#">
+					<div class="minText">今开</div>
+		            <div class="minText" id="openid">----</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media mui-col-xs-20" style="background-color: #1d2831;border: hidden;">
+				<a href="#">
+					<div class="minText">昨收</div>
+		            <div class="minText" id="yestid">----</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media mui-col-xs-20" style="background-color: #1d2831;border: hidden;">
+				<a href="#">
+					<div class="minText">最高</div>
+		            <div class="minText" id="highid">----</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media mui-col-xs-20" style="background-color: #1d2831;border: hidden;">
+				<a href="#">
+					<div class="minText">最低</div>
+		            <div class="minText" id="lowid">----</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media mui-col-xs-20" style="background-color: #1d2831;border: hidden;">
+				<a href="#">
+					<div class="minText">成交量</div>
+		            <div class="minText" id="dealid">----</div>
+				</a>
+			</li>
+		</ul>
+		<div style="background-color: #1d2831;">
+			<span style="width: 170px;height: 70px;display: block;float: left;" class="LargeText" id="nowid">------</span>
+			<span style="width: 70px;height: 70px;display: block;float: left;" class="min2Text" id="now2id">---<br/>---</span>
+		</div>
+	</div>
+	<div class="mui-content" style="background-color: #1d2831;">
+		<div id="slider" class="mui-slider" style="background-color: #FFFFFF;">
+			<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<a class="mui-control-item" href="#item1mobile" style="background-color: #FFFFFF;">分时</a>
+					<a class="mui-control-item" href="#item2mobile" style="background-color: #FFFFFF;">日K</a>
+			</div>
+			<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-6" ></div>
+			<div class="mui-slider-group">
+				<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+					<div class="chart" id="minKChart"></div>
+					<div class="chart2" id="minKChart2"></div>
+				</div>
+				<div id="item2mobile" class="mui-slider-item mui-control-content">
+					<div class="chart3" id="dayKChart"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="mui-content" style="padding-top: 0;margin-bottom: 0;">
+		<a class="updownbut btnselect" id="upbut">涨幅榜</a>
+		<a class="updownbut" id="downbut">跌幅榜</a>
+	</div>
+	<div class="mui-content" id="upPriceDiv" style="padding-top: 0;display: none;">
+		<ul class="mui-table-view" style="margin: 0;padding: 0;" id="upPriceUl">
+		</ul>
+		<div class="mui-loading" style="height: 30px;">
+			<a><span class="mui-spinner"></span></a>
+		</div>
+	</div>
+	<div class="mui-content" id="downPriceDiv" style="padding-top: 0;display: none;">
+		<ul class="mui-table-view" style="margin: 0;padding: 0;" id="downPriceUl">
+		</ul>
+		<div class="mui-loading" style="height: 30px;">
+			<a><span class="mui-spinner"></span></a>
+		</div>
+	</div>
+</body>
+<script src="../../js/mui.min.js"></script>
+<script type="text/javascript" src="../../js/md5.js" ></script>
+<script src="../../js/echarts-all.js"></script>
+<script type="text/javascript" charset="UTF-8">
+    var network = true;
+    var code;
+    var theName;
+    var type
+    var upOrDown = "up";
+    var upPage = 1;
+	var downPage = 1;
+	var pagesize = 15;
+	
+	var curUpTime;
+	var curUpcnt1;
+	var curUpcnt2;
+	var curDowncnt;
+	var curDaycnt1;
+	var curDaycnt2;
+	var curDaycnt3;
+	var curDaycnt4;
+	
+    mui.init();
+    window.addEventListener('initDetailPage',function(event){
+		//获得事件参数
+		code = event.detail.code;
+		type = event.detail.type;
+		clearData();
+		loadDetail();
+		byId("downbut").className="updownbut";
+		byId("upbut").className="updownbut btnselect";
+		byId("upPriceDiv").style.display="";
+		byId("downPriceDiv").style.display="none";
+		loadUpData();
+		loadDownData();
+		loadMinKChart(code);
+		loadDayKChart(code);
+	});
+	function clearData(){
+		document.getElementById("title").innerText="";
+		document.getElementById("openid").innerText="";
+		document.getElementById("yestid").innerText="";
+		document.getElementById("highid").innerText="";
+		document.getElementById("lowid").innerText="";
+		document.getElementById("dealid").innerText="";
+		document.getElementById("nowid").innerText="";
+		document.getElementById("now2id").innerHTML="";
+		document.getElementById("upPriceUl").innerHTML="";
+		document.getElementById("downPriceUl").innerHTML="";
+		upPage = 1;
+		downPage = 1;
+		curUpTime = "";
+		curUpcnt1 = "";
+		curUpcnt2 = "";
+		curDowncnt = "";
+		curDaycnt1 = "";
+		curDaycnt2 = "";
+		curDaycnt3 = "";
+		curDaycnt4 = "";
+		
+		document.getElementById("minKChart").innerHTML="";
+		document.getElementById("minKChart2").innerHTML="";
+		document.getElementById("dayKChart").innerHTML="";
+	}
+	if (mui.os.plus) {
+		mui.plusReady(function() {
+			plusReady();
+		});
+	} else {
+		mui.ready(function() {
+		});
+	}
+	var minKFullPage=null;
+	var dayKFullPage=null;
+	function plusReady(){
+		document.addEventListener( "plusscrollbottom", onScrollToBottom, false );
+		minKFullPage=mui.preload({"id": 'minKFullPage',"url": 'minKFullPage.html'});
+		dayKFullPage=mui.preload({"id": 'dayKFullPage',"url": 'dayKFullPage.html'});
+	}
+	var juheDetailUrl = getJuheDetailUrl();
+	var juheKey = getJuheKey();
+	function loadDetail(){
+		if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+			network = false;
+		}
+		if(network){
+			var url;
+			if(type=="sh"){
+				mui.ajax(juheDetailUrl,{
+					data:{
+						key:juheKey,
+						gid:"sh"+code
+					}, 
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data){
+						if(data.resultcode == "200"){
+							var codeName = data.result[0].data.name;
+							var nowpri = data.result[0].data.nowPri;//当前价
+							var increase = data.result[0].data.increase;//涨跌幅
+							var increPer = data.result[0].data.increPer;//涨跌百分比
+							var yesPri = data.result[0].data.yestodEndPri;//昨收
+							var openPri = data.result[0].data.todayStartPri;//今开
+							var highPri = data.result[0].data.todayMax;//最高
+							var lowpri = data.result[0].data.todayMin;//最低
+							var dealNum = data.result[0].data.traNumber;//成交量
+							
+							theName = codeName;
+							document.getElementById("title").innerText=codeName+"("+code+")";
+							document.getElementById("openid").innerText=leave2point(openPri);
+							document.getElementById("yestid").innerText=leave2point(yesPri);
+							document.getElementById("highid").innerText=leave2point(highPri);
+							document.getElementById("lowid").innerText=leave2point(lowpri);
+							document.getElementById("dealid").innerText=leave2point(dealNum);
+							document.getElementById("nowid").innerText=leave2point(nowpri);
+							document.getElementById("now2id").innerHTML=increase+"<br>"+increPer;
+						}else{
+							mui.toast("请求参数不对");
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("请求异常");
+					}
+				});
+			}else if(type=="sz"){
+				mui.ajax(juheDetailUrl,{
+					data:{
+						key:juheKey,
+						gid:"sz"+code
+					}, 
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data){
+						if(data.resultcode == "200"){
+							var codeName = data.result[0].data.name;
+							var nowpri = data.result[0].data.nowPri;//当前价
+							var increase = data.result[0].data.increase;//涨跌幅
+							var increPer = data.result[0].data.increPer;//涨跌百分比
+							var yesPri = data.result[0].data.yestodEndPri;//昨收
+							var openPri = data.result[0].data.todayStartPri;//今开
+							var highPri = data.result[0].data.todayMax;//最高
+							var lowpri = data.result[0].data.todayMin;//最低
+							var dealNum = data.result[0].data.traNumber;//成交量
+							
+							theName = codeName;
+							document.getElementById("title").innerText=codeName+"("+code+")";
+							document.getElementById("openid").innerText=leave2point(openPri);
+							document.getElementById("yestid").innerText=leave2point(yesPri);
+							document.getElementById("highid").innerText=leave2point(highPri);
+							document.getElementById("lowid").innerText=leave2point(lowpri);
+							document.getElementById("dealid").innerText=leave2point(dealNum);
+							document.getElementById("nowid").innerText=leave2point(nowpri);
+							document.getElementById("now2id").innerHTML=increase+"<br>"+increPer;
+						}else{
+							mui.toast("请求参数不对");
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						mui.toast("请求异常");
+					}
+				});
+			}else if(type=="cyb"){
+				url="";
+			}else if(type=="yy"){
+				url="";
+			}else if(type=="xhjs"){
+				url="";
+			}
+			
+		}else{
+			mui.toast("当前网络不给力，请稍后再试" );
+		}
+	}
+	function leave2point(str){
+		if(str.indexOf('.') > -1){
+			var lenp = str.indexOf('.');
+			var len = str.length;
+			if(len - lenp > 3){
+				return str.substr(0,lenp+3);
+			}
+			return str;
+		}else{
+			return str;
+		}
+	}
+	var byId = function(id) {
+		return document.getElementById(id);
+	};
+	function loadMinKChart(cCode){
+		if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+			network = false;
+		}
+		if(network){
+			var url = getServerHost()+"/hq/getMinKData.do";
+			var timeStamp = getTimeStamp();
+			var msgSignature = getMsgSignature(timeStamp);
+			var data = {
+				timestamp: timeStamp,
+				clientType: "app",
+				msg_signature: msgSignature,
+				code:cCode
+			};
+			mui.getJSON(url, data, returnMinK);
+		}else{
+			mui.toast("bowen-view当前网络不给力，请稍后再试" );
+		}
+	}
+	var returnMinK = function(response) {
+		if(response.errcode == 100200){
+			var upTime = response.data.obj.up_time;
+			var up_cnt = response.data.obj.up_cnt;
+			var down_cnt = response.data.obj.down_cnt;
+			var up_cnt1 = [];
+			var up_cnt2 = [];
+			mui.each(up_cnt,function(index,item){
+				up_cnt1.push(item[0]);
+				up_cnt2.push(item[1]);
+			});
+			
+			curUpTime = upTime;
+			curUpcnt1 = up_cnt1;
+			curUpcnt2 = up_cnt2;
+			curDowncnt = down_cnt;
+			
+			var minkChart = echarts.init(byId('minKChart'));
+			minkChart.setOption(getMinK1Option('line',upTime,up_cnt1,up_cnt2));
+			
+			var minkChart2 = echarts.init(byId('minKChart2'));
+			minkChart2.setOption(getMinK2Option('bar',upTime,down_cnt));
+			
+		}else if(response.errcode == 100402){
+			mui.toast("k关键字不足!");
+		}else if(response.errcode == 100404){
+			mui.toast("k没找到!");
+		}else{
+			mui.toast("k:未知");
+		}
+	}
+	function getMinK1Option(ctype,timeData,data1,data2){
+//		var timeData = [];
+//		var data1 = [];
+//		var data2 = [];
+//		for (var i = 0; i < 1000; i++) {
+//			timeData.push("time"+i);
+//		    data1.push(Math.random() * 100001);
+//		    data2.push(Math.random() * 200001);
+//		}
+		var chartOption = {
+			grid: {
+					x: 30,
+					x2: 8,
+					y: 15,
+					y2: 30
+			},
+			toolbox: {
+				show: false,
+				feature: {
+					mark: {
+						show: true
+					},
+					dataView: {
+						show: true,
+						readOnly: false
+					},
+					magicType: {
+						show: true,
+						type: ['line','bar']
+					},
+					restore: {
+						show: true
+					},
+					saveAsImage: {
+						show: true
+					}
+				}
+			},
+			calculable: false,
+			xAxis: [{
+				type: 'category',
+				axisLabel: {show: true,textStyle: {color: '#000000',fontSize:8}},
+				data: timeData
+			}],
+			yAxis: [{
+				type: 'value',
+				axisLabel: {show: true,textStyle: {color: '#000000',fontSize:7}},
+				splitArea: {
+					show: true
+				}
+			}],
+			series: [{
+				type: ctype,
+				itemStyle:{
+					normal:{lineStyle:{color:'#FFCC33',width:1}}
+				},
+				data: data1
+			}, {
+				type: ctype,
+				itemStyle:{
+					normal:{lineStyle:{color:'#333333',width:1}}
+				},
+				data: data2
+			}]
+		}
+		return chartOption;
+	}
+	function getMinK2Option(ctype,timeData,data1){
+//		var timeData = [];
+//		var data1 = [];
+//		var data2 = [];
+//		for (var i = 0; i < 1000; i++) {
+//			timeData.push("time"+i);
+//		    data1.push(Math.random() * 100001);
+//		    data2.push(Math.random() * 200001);
+//		}
+		var chartOption = {
+			grid: {
+					x: 30,
+					x2: 8,
+					y: 0,
+					y2: 30
+			},
+			toolbox: {
+				show: false,
+				feature: {
+					mark: {
+						show: true
+					},
+					dataView: {
+						show: true,
+						readOnly: false
+					},
+					magicType: {
+						show: true,
+						type: ['line','bar']
+					},
+					restore: {
+						show: true
+					},
+					saveAsImage: {
+						show: true
+					}
+				}
+			},
+			calculable: false,
+			xAxis: [{
+				type: 'category',
+				axisLabel: {show: true,textStyle: {color: '#000000',fontSize:8}},
+				data: timeData
+			}],
+			yAxis: [{
+				type: 'value',
+				axisLabel: {show: true,textStyle: {color: '#000000',fontSize:7}},
+				splitArea: {
+					show: true
+				}
+			}],
+			series: [{
+				type: ctype,
+				itemStyle:{
+					normal:{lineStyle:{color:'#FFCC33',width:2}}
+				},
+				data: data1
+			}]
+		}
+		return chartOption;
+	}
+	
+	function loadDayKChart(cCode){
+		if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+			network = false;
+		}
+		if(network){
+			var url = getServerHost()+"/hq/getDayKData.do";
+			var timeStamp = getTimeStamp();
+			var msgSignature = getMsgSignature(timeStamp);
+			var data = {
+				timestamp: timeStamp,
+				clientType: "app",
+				msg_signature: msgSignature,
+				code:cCode,
+				pageSize:80
+			};
+			mui.getJSON(url, data, returnDayK);
+		}else{
+			mui.toast("当前网络不给力，请稍后再试" );
+		}
+	}
+	var returnDayK = function(response) {
+		if(response.errcode == 100200){
+			var upTime = response.data.obj.up_time;
+			var up_cnt = response.data.obj.up_cnt;
+//			mui.toast(upTime+up_cnt);
+			var up_cnt1 = [];
+			var up_cnt2 = [];
+			var up_cnt3 = [];
+			var up_cnt4 = [];
+			
+			mui.each(up_cnt,function(index,item){
+				up_cnt1.push(item[0]);
+				up_cnt2.push(item[1]);
+				up_cnt3.push(item[2]);
+				up_cnt4.push(item[3]);
+			});
+			
+			curDaycnt1 = up_cnt1;
+			curDaycnt2 = up_cnt2;
+			curDaycnt3 = up_cnt3;
+			curDaycnt4 = up_cnt4;
+			
+			var dayKChart = echarts.init(byId('dayKChart'));
+			dayKChart.setOption(getDayKOption('line',upTime,up_cnt1,up_cnt2,up_cnt3,up_cnt4));
+			
+		}else if(response.errcode == 100402){
+			mui.toast("k关键字不足!");
+		}else if(response.errcode == 100404){
+			mui.toast("k没找到!");
+		}else{
+			mui.toast("k:未知");
+		}
+	}
+	function getDayKOption(ctype,timeData,data1,data2,data3,data4){
+//		var timeData = [];
+//		var data1 = [];
+//		var data2 = [];
+//		for (var i = 0; i < 1000; i++) {
+//			timeData.push("time"+i);
+//		    data1.push(Math.random() * 100001);
+//		    data2.push(Math.random() * 200001);
+//		}
+		var chartOption = {
+			grid: {
+					x: 30,
+					x2: 8,
+					y: 15,
+					y2: 30
+			},
+			toolbox: {
+				show: false,
+				feature: {
+					mark: {
+						show: true
+					},
+					dataView: {
+						show: true,
+						readOnly: false
+					},
+					magicType: {
+						show: true,
+						type: ['line','bar']
+					},
+					restore: {
+						show: true
+					},
+					saveAsImage: {
+						show: true
+					}
+				}
+			},
+			calculable: false,
+			xAxis: [{
+				type: 'category',
+				axisLabel: {show: true,textStyle: {color: '#000000',fontSize:8}},
+				data: timeData
+			}],
+			yAxis: [{
+				type: 'value',
+				axisLabel: {show: true,textStyle: {color: '#000000',fontSize:7}},
+				splitArea: {
+					show: true
+				}
+			}],
+			series: [{
+				type: ctype,
+				itemStyle:{
+					normal:{lineStyle:{color:'#FFCC33',width:1}}
+				},
+				data: data1
+			}, {
+				type: ctype,
+				itemStyle:{
+					normal:{lineStyle:{color:'#333333',width:1}}
+				},
+				data: data2
+			}, {
+				type: ctype,
+				itemStyle:{
+					normal:{lineStyle:{color:'#FF0000',width:1}}
+				},
+				data: data3
+			}, {
+				type: ctype,
+				itemStyle:{
+					normal:{lineStyle:{color:'#2AC845',width:1}}
+				},
+				data: data4
+			}]
+		}
+		return chartOption;
+	}
+	byId("minKChart").addEventListener('tap',function(){
+		if(curUpTime == null || curUpTime == "" || curUpTime == undefined || curUpTime == "undefined"){
+			return false;
+		}
+		if(!minKFullPage){minKFullPage = plus.webview.getWebviewById('minKFullPage');}
+		mui.fire(minKFullPage,'initKPage',{time:curUpTime,upcnt1:curUpcnt1,upcnt2:curUpcnt2,downcnt:curDowncnt});
+//				daycnt1:curDaycnt1,daycnt2:curDaycnt2,daycnt3:curDaycnt3,daycnt4:curDaycnt4});
+		if(mui.os.ios){
+			minKFullPage.show("slide-in-bottom");
+		}else if(mui.os.android){
+			mui.openWindow({
+				id: 'minKFullPage',
+				show: {aniShow: 'slide-in-bottom'},
+				styles: {popGesture: 'hide'},
+				waiting: {autoShow: false}
+			});
+		}
+	},false);
+	byId("minKChart2").addEventListener('tap',function(){
+		if(curUpTime == null || curUpTime == "" || curUpTime == undefined || curUpTime == "undefined"){
+			return false;
+		}
+		if(!minKFullPage){minKFullPage = plus.webview.getWebviewById('minKFullPage');}
+		mui.fire(minKFullPage,'initKPage',{time:curUpTime,upcnt1:curUpcnt1,upcnt2:curUpcnt2,downcnt:curDowncnt});
+//				daycnt1:curDaycnt1,daycnt2:curDaycnt2,daycnt3:curDaycnt3,daycnt4:curDaycnt4});
+		if(mui.os.ios){
+			minKFullPage.show("slide-in-bottom");
+		}else if(mui.os.android){
+			mui.openWindow({
+				id: 'minKFullPage',
+				show: {aniShow: 'slide-in-bottom'},
+				styles: {popGesture: 'hide'},
+				waiting: {autoShow: false}
+			});
+		}
+	},false);
+	byId("dayKChart").addEventListener('tap',function(){
+		if(curUpTime == null || curUpTime == "" || curUpTime == undefined || curUpTime == "undefined"){
+			return false;
+		}
+		if(!dayKFullPage){dayKFullPage = plus.webview.getWebviewById('dayKFullPage');}
+		mui.fire(dayKFullPage,'initKPage',{time:curUpTime,daycnt1:curDaycnt1,daycnt2:curDaycnt2,daycnt3:curDaycnt3,daycnt4:curDaycnt4});
+		if(mui.os.ios){
+			dayKFullPage.show("slide-in-bottom");
+		}else if(mui.os.android){
+			mui.openWindow({
+				id: 'dayKFullPage',
+				show: {aniShow: 'slide-in-bottom'},
+				styles: {popGesture: 'hide'},
+				waiting: {autoShow: false}
+			});
+		}
+	},false);
+	byId("upbut").addEventListener('tap',function(){
+		byId("downbut").className="updownbut";
+		byId("upbut").className="updownbut btnselect";
+		byId("upPriceDiv").style.display="";
+		byId("downPriceDiv").style.display="none";
+		upOrDown = "up";
+	},false);
+	byId("downbut").addEventListener('tap',function(){
+		byId("upbut").className="updownbut";
+		byId("downbut").className="updownbut btnselect";
+		byId("downPriceDiv").style.display="";
+		byId("upPriceDiv").style.display="none";
+		upOrDown = "down";
+	},false);
+	
+	
+	function onScrollToBottom(){
+		if(upOrDown == "up"){
+			loadUpData();
+		}else if(upOrDown == "down"){
+			loadDownData();
+		}
+	}
+	
+	function loadUpData(){
+		if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+			network = false;
+		}
+		if(network){
+			var url = getServerHost()+"/hq/getUpAndDownData.do";
+			var timeStamp = getTimeStamp();
+			var msgSignature = getMsgSignature(timeStamp);
+			mui.ajax(url,{
+				data:{
+					timestamp: timeStamp,
+					clientType: "app",
+					msg_signature: msgSignature,
+					dataType:type,
+					orderType:"asc",
+					page:upPage,
+					pageSize:pagesize
+				}, 
+				dataType:'json',//服务器返回json格式数据
+				type:'post',//HTTP请求类型
+				timeout:10000,//超时时间设置为10秒；
+				success:function(data){
+					if(data.errcode == 100200){
+						upPage++;
+						var items = data.data.list;
+						mui.each(items,function(index,item){
+							var ul = document.getElementById("upPriceUl");
+							var li = document.createElement('li');
+							li.className = 'mui-table-view-cell mui-media';
+							li.id = item.code;
+							var innerStr = '<a id="hqa'+item.code+'" class="libutclss hqid" href="javascript:;">'+item.name+'</a>';
+							innerStr += '<a id="hqb'+item.code+'" class="libutclss hqid" href="javascript:;">'+item.trade+'</a>';
+							innerStr += '<a id="hqc'+item.code+'" class="libutclss hqid redText" href="javascript:;">'+item.changepercent+'</a>';
+							li.innerHTML = innerStr;
+							ul.appendChild(li);
+						});
+					}else if(data.errcode == 100600){
+						mui.toast("没有更多数据了...");
+					}else{
+						mui.toast("请求参数不对"+data.errcode);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					mui.toast("请求异常");
+				}
+			});
+		}else{
+			mui.toast("当前网络不给力，请稍后再试" );
+		}
+	}
+	function loadDownData(){
+		if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+			network = false;
+		}
+		if(network){
+			var url = getServerHost()+"/hq/getUpAndDownData.do";
+			var timeStamp = getTimeStamp();
+			var msgSignature = getMsgSignature(timeStamp);
+			mui.ajax(url,{
+				data:{
+					timestamp: timeStamp,
+					clientType: "app",
+					msg_signature: msgSignature,
+					dataType:type,
+					orderType:"desc",
+					page:downPage,
+					pageSize:pagesize
+				}, 
+				dataType:'json',//服务器返回json格式数据
+				type:'post',//HTTP请求类型
+				timeout:10000,//超时时间设置为10秒；
+				success:function(data){
+					if(data.errcode == 100200){
+						downPage++;
+						var items = data.data.list;
+						mui.each(items,function(index,item){
+							var ul = document.getElementById("downPriceUl");
+							var li = document.createElement('li');
+							li.className = "mui-table-view-cell mui-media";
+							li.id = item.code;
+							var innerStr = '<a id="hqa'+item.code+'" class="libutclss hqid" href="javascript:;">'+item.name+'</a>';
+							innerStr += '<a id="hqb'+item.code+'" class="libutclss hqid" href="javascript:;">'+item.trade+'</a>';
+							innerStr += '<a id="hqc'+item.code+'" class="libutclss hqid redText" href="javascript:;">'+item.changepercent+'</a>';
+							li.innerHTML = innerStr;
+							ul.appendChild(li);
+						});
+					}else if(data.errcode == 100600){
+						mui.toast("没有更多数据了...");
+					}else{
+						mui.toast("请求参数不对"+data.errcode);
+					}
+				},
+				error:function(xhr,type,errorThrown){
+					mui.toast("请求异常");
+				}
+			});
+		}else{
+			mui.toast("当前网络不给力，请稍后再试" );
+		}
+	}
+	window.addEventListener('tap', function(event) {
+		var eid = event.target.id;
+		var ecl = event.target.className;
+		if(ecl.indexOf('hqid') > -1){
+			var tid = eid.substr(3);
+			var ws=plus.webview.currentWebview();
+			mui.fire(ws,'initDetailPage',{code:tid,type:type});
+		}else if(ecl.indexOf('zixuan') > -1){
+			var btnArray = ['否', '是'];
+			mui.confirm('确认要把'+theName+'添加到自选吗？', '我的自选', btnArray, function(e) {
+				if (e.index == 1) {
+					addZixuanFn();
+				} else {
+					//否
+				}
+			});
+		}
+	});
+	function addZixuanFn(){
+		if(plus.networkinfo.getCurrentType()==plus.networkinfo.CONNECTION_NONE){//判断网络异常
+			network = false;
+		}
+		if(network){
+			var url = getServerHost()+"/hq/addZixuan.do";
+			var timeStamp = getTimeStamp();
+			var msgSignature = getMsgSignature(timeStamp);
+			var token = getToken();
+			var data = {
+				timestamp: timeStamp,
+				clientType: "app",
+				msg_signature: msgSignature,
+				token:token,
+				code:code
+			};
+			mui.getJSON(url, data, returnZixuan);
+		}else{
+			mui.toast("当前网络不给力，请稍后再试" );
+		}
+	}
+	var addGuanzhu = function(response) {
+		if(response.errcode == 100200){
+			mui.toast("添加成功!");
+		}else if(response.errcode == 100402){
+			mui.toast("关键字不足!");
+		}else if(response.errcode == 100300){
+			mui.toast("已经添加过了，无需再添加!");
+		}else if(response.errcode == 100404){
+			mui.toast("没找到!");
+		}else{
+			mui.toast("未知错误");
+		}
+	}
+</script>
+</html>
