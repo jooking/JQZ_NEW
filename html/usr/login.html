@@ -199,6 +199,7 @@
 									//如果微信未安装，则为不启用状态
 									btn.setAttribute('class', 'oauth-btn' + (!isInstalled && service.id === 'weixin' ? (' disabled') : ''));
 									btn.authId = service.id;
+									console.log("service.id="+service.id);
 									btn.style.backgroundImage = 'url("../../images/' + service.id + '.png")'
 									oauthArea.appendChild(btn);
 								}
@@ -208,9 +209,11 @@
 									plus.nativeUI.toast('您尚未安装微信客户端');
 									return;
 								}
+//								console.log("this.id="+this.id);
 								var id = this.getAttribute("id");
-								console.log("id="+id);
+								
 								var auth = auths[this.authId];
+								console.log("auth"+JSON.stringify(auth));
 								var waiting = plus.nativeUI.showWaiting();
 								auth.login(function() {
 									plus.nativeUI.toast("认证成功");
@@ -238,7 +241,7 @@
 												openid:auth.authResult.openid,
 												nickname:auth.userInfo.nickname,
 												gender:auth.userInfo.gender,
-												figureurl:auth.userInfo.figureurl,
+												figureurl:auth.userInfo.figureurl_qq_1,
 												type:'add'
 											}
 											//============保存本地用户信息
@@ -366,7 +369,7 @@
 				//保存用户信息
 				saveTokenState(data.data.token);
 				console.log("save TOKEN="+JSON.stringify(getState()));
-				
+				mui.back();
 			}else if('100302'==data.errcode){//过期
 				ToastMsg(data.errmsg);
 			}else{
@@ -382,7 +385,7 @@
 //				localStorage.setItem('token',data.data.token);
 				saveTokenState(data.data.token);
 				console.log("save TOKEN="+JSON.stringify(getState()));
-				
+				mui.back();
 			}else if('100302'==data.errcode){
 				ToastMsg(data.errmsg);
 			}else{
@@ -397,7 +400,7 @@
 				//保存用户信息
 				saveTokenState(data.data.token);
 				console.log("save TOKEN="+JSON.stringify(getState()));
-				
+				mui.back();
 			}else if('100302'==data.errcode){
 				ToastMsg(data.errmsg);
 			}else{
