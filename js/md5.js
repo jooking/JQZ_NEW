@@ -34,7 +34,7 @@ function getAppId(){return "jinqianzhuang";}
 function getMsgSignature(timpstamp){var appid = getAppId();return hex_md5(timpstamp+appid);}
 function getServerHost(){return "http://101.201.106.4:80/platform-server";}
 function getImageHost(){return "http://101.201.106.4:8080/jqz/image/";}
-function getToken(){return "h0Gt215EHoSMPqtTxzEH1462885999148";}
+function getToken(){return "HjyWbJxUqq8NpLinJZtk1463707375768";}
 function getJuheDetailUrl(){return "http://web.juhe.cn:8080/finance/stock/hs";}
 function getJuheKey(){return "62796a96914734498c9f9c260682d175";}
 

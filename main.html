@@ -78,9 +78,9 @@
 			mui.plusReady(function() {
 				
 				//定义前台切换到后台事件
-				document.addEventListener( "pause", pauseFn, false );
+//				document.addEventListener( "pause", pauseFn, false );
 				//定义后台切换到前台事件
-				document.addEventListener( "resume", resumeFn, false );
+//				document.addEventListener( "resume", resumeFn, false );
 				
 				var self = plus.webview.currentWebview();
 				for (var i = 0; i < 5; i++) {
@@ -137,12 +137,12 @@
 				}
 			});
 			
-			function pauseFn(){
-				mui.toast("前台切换到后台了！");
-			}
-			function resumeFn(){
-				mui.toast("后台切换到前台了！");
-			}
+//			function pauseFn(){
+//				mui.toast("前台切换到后台了！");
+//			}
+//			function resumeFn(){
+//				mui.toast("后台切换到前台了！");
+//			}
 			
 		</script>
 		<!--<div class="mui-content">

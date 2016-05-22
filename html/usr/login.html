@@ -400,7 +400,7 @@
 				//保存用户信息
 				saveTokenState(data.data.token);
 				console.log("save TOKEN="+JSON.stringify(getState()));
-				mui.back();
+				logianBack ();
 			}else if('100302'==data.errcode){
 				ToastMsg(data.errmsg);
 			}else{
@@ -418,6 +418,11 @@
 		function loginQQError(type,errorThrown){
 				
 			ToastMsg("服务器连接失败！");
+		}
+		function logianBack (){
+		   var setPage = plus.webview.getWebviewById('html/main/tab-webview-subpage-setting.html');
+		 	 mui.fire(setPage,'loadPage',{loadType:'aa'});
+		 	 mui.back();
 		}
 		</script>
 	</body>

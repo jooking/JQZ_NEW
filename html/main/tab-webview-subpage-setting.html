@@ -67,22 +67,17 @@
 			</div>-->
 			<ul class="mui-table-view">
 				<li class="mui-table-view-cell">
-					<a class="mui-navigate-right">
+					<a id = "message" class="mui-navigate-right">
 						我的消息
 					</a>
 				</li>
 				<li class="mui-table-view-cell">
-					<a class="mui-navigate-right">
+					<a id = "zixuan" class="mui-navigate-right">
 						我的自选
 					</a>
 				</li>
 				<li class="mui-table-view-cell">
-					<a class="mui-navigate-right">
-						我的关注
-					</a>
-				</li>
-				<li class="mui-table-view-cell">
-					<a class="mui-navigate-right">
+					<a id = "bowen" class="mui-navigate-right">
 						我的博文
 					</a>
 				</li>
@@ -230,6 +225,12 @@
 ////				login.style.color = 'indianred';
 ////			}
 ////		}
+		window.addEventListener('loadPage',function(event){
+			  	//获得事件参数
+			  	var onloadType = event.detail.loadType;
+			  	console.log("onloadType="+onloadType);
+			  
+			});
 		//设置按钮
 		(function($, doc) {
 				$.init();
@@ -242,7 +243,25 @@
 					var settingButton = doc.getElementById('setting');
 					//登录
 					var login = document.getElementById('login');
+					//我的消息
+					var message = document.getElementById('message');
+					//我的自选
+					var zixuan = document.getElementById('zixuan');
+					//我的博文
+					var bowen = document.getElementById('bowen');
+					//定义前台切换到后台事件
+//					document.addEventListener( "pause", pauseFn, false );
+//					//定义后台切换到前台事件
+//					document.addEventListener( "resume", resumeFn, false );
 					//settingButton.style.display = settings.autoLogin ? 'block' : 'none';
+					//当前页面
+					var ws = plus.webview.currentWebview();
+					console.log("ws="+ws.id);
+//					ws.addEventListener( "show",resumeSetting ,false);
+					
+					
+//					loginPage.addEventListener( "close",resumeSetting ,false);
+					
 					settingButton.addEventListener('tap', function(event) {
 						$.openWindow({
 							id: 'setting',
@@ -273,7 +292,36 @@
 							}
 						});
 					}, false);
+					bowen.addEventListener('tap', function(event) {
+						$.openWindow({
+							url: '../../html/usr/myBowen.html',
+							id: 'bowen',
+							preload: false,
+							show: {
+								aniShow: 'pop-in'
+							},
+							styles: {
+								popGesture: 'hide'
+							},
+							waiting: {
+								autoShow: false
+							}
+						});
+					}, false);
+//					var loginPage = plus.webview.getWebviewById('login');
+//					console.log("loginPage"+loginPage.id);
 				});
 			}(mui, document));
+			
+//			function pauseFn(){
+////				mui.toast("前台切换到后台了！");
+//			}
+//			function resumeFn(){
+//				mui.toast("后台切换到前台了！");
+//			}
+					
+			var resumeSetting=function(e){
+				mui.toast("detai页打开了");
+			}
 	</script>
 </html>
